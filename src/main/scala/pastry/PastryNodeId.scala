@@ -3,7 +3,7 @@ package pastry
 import java.security.MessageDigest
 import util.control.Breaks._
 
-class PastryNodeId(val uniqueTrait: String, val length: Int = 20, val base: Int = 10, val algorithm: String = "sha1")
+class PastryNodeId(val uniqueTrait: String, val length: Int = 16, val base: Int = 16, val algorithm: String = "sha1")
   extends Ordered[PastryNodeId] {
   val hashCalc = MessageDigest.getInstance(algorithm);
   val truncateLen: Int = if (length > hashCalc.getDigestLength() || length < 0) {

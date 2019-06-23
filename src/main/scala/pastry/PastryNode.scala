@@ -1,39 +1,54 @@
 package pastry
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import pastry.PastryNode.NewNodeArrival
 
 object PastryNode{
   def props(myIpAddress: String, seedActor: ActorRef): Props = Props(new PastryNode(myIpAddress, Some(seedActor)))
   def props(myIpAddress: String): Props = Props(new PastryNode(myIpAddress))
-  case class NewNodeArrival(newActorRef: ActorRef)
+  case class Join(id: PastryNodeId, newActorRef: ActorRef)
 }
 class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None) extends Actor with ActorLogging{
-  val _id = new PastryNodeId(myIpAddress, 2)
+  import PastryNode._
 
-  def id = _id
+  val _id = new PastryNodeId(myIpAddress, 2)
+  var _routingTable = new PastryRoutingTable(PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE)
+  var _leafSet = new PastryLeafSet(PastryConstants.TWO_RAISED_TO_BASE)
+  var _neighbourhoodSet = new PastryNeighbourhoodSet(PastryConstants.TWO_RAISED_TO_BASE)
+
+  def id:PastryNodeId = _id
 
   override def preStart(): Unit = {
-    log.info("Starting....")
-    log.info("Before that checking if the seedActor is empty....")
     seedActor.getOrElse({
-      log.info("Empty.....We are the first node in the pastry network")
+      // Empty pastry network
       return
     })
-    log.info("Not empty....there are other pastry nodes existing passed in as argument")
-    log.info("Try to connect to pastry node actor....")
-    log.info("If connection successful, create a node id and ask Pastry Node actor A to route join message")
-    log.info("Populate state tables....")
-
-    seedActor.get ! NewNodeArrival(self)
+    // At least one pastry node present
+    seedActor.get ! Join(_id, self)
   }
 
+  // def forward()
+  // def deliver()
+  // def route()
+
   override def receive: Receive = {
-    case NewNodeArrival(newActorRef) =>
-      log.info("New pastry node arrived.....")
-      newActorRef ! "Welcome"
+    case Join(id, newActorRef) =>
+      newActorRef ! s"Welcome to pastry! ${id.getHex} in hex or ${id.getIntBase10} in integer"
+      // invoke routing logic
+
+//    case Route(message, key) =>
+      // Routing logic
+      // 1. check leaf set
+      // 2. check routing table
+      // 3. else take union and route to closest prefix
+
+    case "Thank you!" =>
+      log.info("Received:{}", "Thank you!")
+      None
 
     case msg: String =>
       log.info("Received:{}", msg)
+      sender() ! "Thank you!"
   }
+
+  // def distance(other: Actor[PastryNode])
 }
