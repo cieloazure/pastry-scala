@@ -5,11 +5,11 @@ import util.control.Breaks._
 
 class PastryNodeId(val uniqueTrait: String, val length: Int = 16, val base: Int = 16, val algorithm: String = "sha1")
   extends Ordered[PastryNodeId] {
-  val hashCalc = MessageDigest.getInstance(algorithm);
-  val truncateLen: Int = if (length > hashCalc.getDigestLength() || length < 0) {
+  val hashCalc: MessageDigest = MessageDigest.getInstance(algorithm)
+  val truncateLen: Int = if (length > hashCalc.getDigestLength || length < 0) {
     0
   } else {
-    hashCalc.getDigestLength() - length;
+    hashCalc.getDigestLength - length
   }
 
   private val _byteId: Array[Byte] = hashCalc.digest(uniqueTrait.getBytes()).dropRight(truncateLen)
@@ -22,7 +22,7 @@ class PastryNodeId(val uniqueTrait: String, val length: Int = 16, val base: Int 
     _byteId.map("%02x".format(_)).mkString
   }
 
-  def byteId=  _byteId
+  def byteId:Array[Byte] =  _byteId
 
   def findCommonPrefix(other: PastryNodeId): Int = {
     var prefix = 0
@@ -38,7 +38,19 @@ class PastryNodeId(val uniqueTrait: String, val length: Int = 16, val base: Int 
     prefix
   }
 
-  def getIntBase10: BigInt = {
-    getHex.toList.map("0123456789abcdef".indexOf(_)).reduceLeft(_ * 16 + _).abs
+  def diff(other: PastryNodeId): Int = {
+    (this.getIntBase10 - other.getIntBase10).abs
+  }
+
+  def getDigit(position: Int): Int = {
+    hex2int(getHex(position).toString)
+  }
+
+  def getIntBase10: Int = {
+    hex2int(getHex)
+  }
+
+  private def hex2int(hexString: String): Int = {
+    hexString.toList.map("0123456789abcdef".indexOf(_)).reduceLeft(_ * 16 + _).abs
   }
 }

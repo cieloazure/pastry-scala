@@ -7,7 +7,7 @@
 		revision="1.0"
 		conf="runtime-internal"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20190622124552"/>
+		date="20190623101234"/>
 	<dependencies>
 		<module organisation="com.typesafe.akka" name="akka-testkit_2.12">
 			<revision name="2.6.0-M3" status="release" pubdate="20190614060904" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.6.0-M3" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="2">

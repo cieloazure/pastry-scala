@@ -2,34 +2,26 @@ package pastry
 
 import akka.actor.ActorRef
 
-object PastryRoutingTable {
-  //  case class Entry(id: PastryNodeId,ref: ActorRef )
-  case class Entry(id: Int)
-}
+class PastryRoutingTable(val host: Entry, val nodes: Int, val entries: Int) {
 
-class PastryRoutingTable(val nodes: Int, val entries: Int) {
-  import PastryRoutingTable._
-
-  var _state: Map[Int, Array[Entry]] = Map()
   var _rows: Int = (math.log(nodes) / math.log(entries)).toInt
+  var _state: Array[Array[Option[Entry]]] = Array.fill(_rows, entries)(None)
 
-  for(_rowNum <- 0 to _rows + 1){
-    _state = _state + (_rowNum -> Array[Entry]())
+
+  def getNode(key: PastryNodeId): Option[Entry] = {
+    // Get common prefix
+    val commonPrefixLen: Int = key.findCommonPrefix(host.id)
+    if(commonPrefixLen == 0) return None
+    val entryIdx: Int = key.getDigit(commonPrefixLen)
+
+    val entry: Entry = _state(commonPrefixLen)(entryIdx).getOrElse({
+      return None
+    })
+
+    Some(entry)
   }
 
-   def add(nodes: Array[Entry], prefixLength: Int): Unit = {
-     var prevArray: Array[Entry] = _state(prefixLength)
-     val updatedArray = prevArray ++ nodes
-     _state = _state + (prefixLength -> updatedArray)
-  }
-
-  def add(node: Entry, prefixLength: Int): Unit = {
-    var prevArray: Array[Entry] = _state(prefixLength)
-    var updatedArray = prevArray :+ node
-    _state = _state + (prefixLength -> updatedArray)
-  }
-
-  def get(prefixLength: Int): Array[Entry] = {
-    _state(prefixLength)
+  def getTable: Array[Entry] = {
+    _state.flatten.filter(_.isDefined).map(_.get)
   }
 }

@@ -3,10 +3,14 @@ package pastry
 import akka.actor.ActorRef
 
 class PastryNeighbourhoodSet(entries: Int) {
-  var _state: Array[ActorRef] = Array[ActorRef]()
+  var _state: Array[Option[Entry]] = Array.fill(entries)(None)
 
-  def add(neighbour: ActorRef): Unit = {
-    _state = _state :+ neighbour
-    if(_state.length > entries) _state.dropRight(1)
+  def getSet: Array[Entry] = {
+    val filtered = _state.filter(_.isDefined)
+    if(filtered.isEmpty){
+      filtered.flatten
+    } else {
+      filtered.map(_.get)
+    }
   }
 }

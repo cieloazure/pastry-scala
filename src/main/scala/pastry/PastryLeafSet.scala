@@ -1,39 +1,53 @@
 package pastry
 
-object PastryLeafSet{
-  case class Entry(id: Int)
-}
-class PastryLeafSet(val entries: Int) {
-  import PastryLeafSet._
+import akka.actor.ActorRef
 
+class PastryLeafSet(val host: Entry, val entries: Int) {
 
-  var _state: Map[Int, Array[Entry]] = Map[Int, Array[Entry]]()
-  _state = _state + (0 -> Array[Entry](), 1 -> Array[Entry]())
+  var _lower: Array[Option[Entry]] = Array.fill(entries/2)(None)
+  var _higher: Array[Option[Entry]] = Array.fill(entries/2)(None)
 
-
-  def getLower: Array[Entry] = {
-    _state(0)
+  private def lowest: Option[Entry] = {
+    val filtered = _lower.filter(_.isDefined)
+    if(filtered.isEmpty) return None
+    Some(filtered.map(_.get).min)
   }
 
-  def addLower(node: Entry): Unit = {
-    val prev = _state(0)
-    val curr = node +: prev
-    if(curr.length > entries) curr.dropRight(1)
-    _state = _state + (0 -> curr)
+  private def highest: Option[Entry] = {
+    val filtered = _higher.filter(_.isDefined)
+    if(filtered.isEmpty) return None
+    Some(filtered.map(_.get).max)
   }
 
-  def getHigher: Array[Entry] = {
-    _state(1)
+  def getNode(key: PastryNodeId): Option[Entry] = {
+    val low: Option[Entry] = lowest
+    val high: Option[Entry] = highest
+
+    if(low.isEmpty && high.isEmpty) return None
+
+    // Not in leaf set
+    if(low.isDefined && key < low.get.id){
+      return None
+    }
+
+    if(high.isDefined && key > high.get.id){
+      return None
+    }
+
+    // Combine both
+    val all: Array[Option[Entry]] = _lower ++ _higher :+ Some(host)
+    val minDiffIdx: Int = all
+                      .filter(_.isDefined)
+                      .map(_.get)
+                      .map(_.id.diff(key))
+                      .zipWithIndex
+                      .min._2
+
+    Some(all(minDiffIdx).get)
   }
 
-  def addHigher(node: Entry): Unit = {
-    val prev = _state(1)
-    var curr = node +: prev
-    if(curr.length > entries) curr.dropRight(1)
-    _state = _state + (1 -> curr)
-  }
-
-  def copy(other: PastryLeafSet): Unit = {
-    this._state = other._state
+  def getSet: Array[Entry] = {
+    val _all = _lower ++ _higher
+    _all.filter(_.isDefined).map(_.get)
   }
 }

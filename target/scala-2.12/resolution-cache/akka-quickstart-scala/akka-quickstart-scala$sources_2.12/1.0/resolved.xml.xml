@@ -4,7 +4,7 @@
 		module="akka-quickstart-scala$sources_2.12"
 		revision="1.0"
 		status="integration"
-		publication="20190622124548"
+		publication="20190623101232"
 	/>
 	<configurations>
 		<conf name="default" visibility="public" description=""/>

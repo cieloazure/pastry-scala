@@ -2,10 +2,10 @@ package pastry
 
 
 class PastryRoutingTableTest extends UnitSpec {
-  "Pastry Routing Table" should "after creating a new instance be initialized to logN/log2^b" in {
-    val routingTable: PastryRoutingTable = new PastryRoutingTable(PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE)
-  }
-
+//  "Pastry Routing Table" should "after creating a new instance be initialized to logN/log2^b" in {
+//    val routingTable: PastryRoutingTable = new PastryRoutingTable(PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE)
+//  }
+//
 //  it should "after calling add append the elements to the inner data structure" in {
 //    import PastryRoutingTable.Entry
 //    val routingTable: PastryRoutingTable = new PastryRoutingTable(PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE)
