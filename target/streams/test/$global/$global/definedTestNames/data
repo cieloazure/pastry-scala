@@ -1,1 +1,1 @@
-["com.example.AkkaQuickstartSpec","pastry.PastryNodeIdTest","com.example.PastryNodeTest"]
+["com.example.AkkaQuickstartSpec","pastry.PastryNodeIdTest","pastry.PastryRoutingTableTest","com.example.PastryNodeTest"]

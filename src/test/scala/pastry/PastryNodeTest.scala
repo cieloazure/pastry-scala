@@ -4,8 +4,8 @@ package com.example
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
-import pastry.PastryNode
-import pastry.PastryNode.NewNodeArrival
+import pastry.{PastryNode, PastryNodeId}
+import pastry.PastryNode.Join
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -36,7 +36,8 @@ class PastryNodeTest(_system: ActorSystem)
     "with non empty seed actor it will receive a new node arrival message" in {
       val testProbe = TestProbe()
       val pastryNodeActor: ActorRef = system.actorOf(PastryNode.props("127.0.0.1", testProbe.ref))
-      testProbe.expectMsg(500 millis, NewNodeArrival(pastryNodeActor))
+      val id: PastryNodeId = new PastryNodeId("127.0.0.1")
+      testProbe.expectMsg(500 millis, Join(id, pastryNodeActor))
     }
   }
 
