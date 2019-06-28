@@ -29,8 +29,8 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
   val _id = new PastryNodeId(myIpAddress, 2)
 
   var _routingTable = new PastryRoutingTable(Entry(_id, self), PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE)
-  var _leafSet = new PastryLeafSet(Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE)
-  var _neighbourhoodSet = new PastryNeighbourhoodSet(PastryConstants.TWO_RAISED_TO_BASE)
+  var _leafSet = new LeafSet[Entry](Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE, (e1: Entry, e2: Entry) => e1.compareTo(e2))
+  var _neighbourhoodSet = new PastryNeighbourhoodSet(Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE)
 
   override def preStart(): Unit = {
     log.info(s"Starting node with id ${id.getHex}")
@@ -47,13 +47,11 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
     log.info(s"[Pastry Node ${id.getHex}]: Received ${msg} with ${key}")
   }
 
-  def id: PastryNodeId = _id
-
   def routingLogic(key: PastryNodeId): Option[Entry] = {
     // use routingTable, leafSet and neighbourhoodSet for routing and get appropriate node
 
     // Check leafSet
-    val leafNode = _leafSet.getNode(key)
+    val leafNode = _leafSet.getNode(Entry(key, null), (e1: Entry, e2: Entry) => e1.id.diff(e2.id))
     if (leafNode.isDefined) {
       return Some(leafNode.get)
     }
@@ -72,16 +70,33 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
     }
 
     val minCommonPrefix = key.findCommonPrefix(_id)
+
     //filter out combinedState nodes which have common prefix less than current node's id
-    val filtered: Array[Entry] = combinedState.filter(_.id.findCommonPrefix(key) < minCommonPrefix)
+    val filtered: Array[Entry] = combinedState.filter(_.id.findCommonPrefix(key) >= minCommonPrefix)
+    if(filtered.isEmpty){
+      return None
+    }
+
     //if any nodes are remaining try to find a node whose difference is less than current node
     val minIdx: Int = filtered.map(_.id.diff(key)).zipWithIndex.min._2
 
     Some(filtered(minIdx))
   }
 
+  def id: PastryNodeId = _id
+
   def getUnion: Array[Entry] = {
     (_routingTable.getTable ++ _leafSet.getSet ++ _neighbourhoodSet.getSet).distinct
+  }
+
+  def updateState(nodes: Array[Entry]): Unit = {
+    this._leafSet.updateSet(nodes)
+    this._routingTable.update(nodes)
+  }
+
+  def updateNeighbourhood(nodes: Array[Entry]): Unit = {
+    this._neighbourhoodSet.update(nodes)
+    updateState(nodes)
   }
 
   override def receive: Receive = {
@@ -108,12 +123,12 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
 
       // A suitable node is found which is numerically close
       // can populate leaf set from last node
-//      trace.last.actor ! LeafSetRequest
-//
-//      // The first node in the trace is close by proximity hence
-//      // neighbourhood set can be populated
-//      trace.head.actor ! NeighbourhoodSetRequest
-//
+      trace.last.actor ! LeafSetRequest
+
+      // The first node in the trace is close by proximity hence
+      // neighbourhood set can be populated
+      trace.head.actor ! NeighbourhoodSetRequest
+
 //      if(trace.length == 1){
 //        // Get the entire routing table and populate routing table
 //        trace.head.actor ! RoutingTableRequest(None)
@@ -126,6 +141,7 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
 //        }
 //      }
 
+
     case JoinResponseNotOK(from) =>
       log.info(s"[${id.getHex}]Received Not OK response from ${from.getHex}")
 
@@ -135,35 +151,43 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
       // But...
       // As the node is close by proximity metric
       // can just populate neighbourhood set
-//      sender() ! NeighbourhoodSetRequest()
+      sender() ! NeighbourhoodSetRequest(id)
+      sender() ! LeafSetRequest(id)
+      sender() ! RoutingTableRequest(id, None)
+//      sendJoinMessage()
 
+     case LeafSetRequest(from) =>
+       sender() ! LeafSetResponse(id, _leafSet.getSet)
 
-    // case LeafSetRequest() =>
-    // sender() ! _leafSet
+     case LeafSetResponse(from, hisLeafSet) =>
+       updateState(hisLeafSet)
 
-    // case LeafSetResponse(hisLeafSet) =>
-    //  this._leafSet.set(hisLeafSet)
+     case NeighbourhoodSetRequest(from) =>
+       sender() ! NeighbourhoodSetResponse(id, _neighbourhoodSet.getSet)
 
-    // case NeighbourhoodSetRequest() =>
-    // sender() ! _neighbourhoodSet
+     case NeighbourhoodSetResponse(from, hisNeighbourhoodSet) =>
+       updateNeighbourhood(hisNeighbourhoodSet)
 
-    // case NeighbourhoodSetResponse(hisNeighbourhoodSet) =?
-    // this._neighbourhoodSet = hisNeighbourhoodSet
+      case RoutingTableRequest(from, id) =>
+        sender() ! RoutingTableResponse(from, this._routingTable.getTable)
+
+      case RoutingTableResponse(from, hisRoutingTable) =>
+       updateState(hisRoutingTable)
 
     // case Route("join", id, trace, replyTo) =>
     //      node = routingLogic()
-    // newTrace = trace +: sender()
+    // newTrace = trace +: self
     //      if(node == self) sender() ! JoinResponse(trace)
     //     node ! Route("join", id, trace, replyTo)
 
     //    case Route(msg, key, traceRoute, replyTo) =>
     // routingLogic()
 
-    // case NewNodeJoined(who) =>
+//     case NewNodeJoined(who) =>
+//      updateState(who, sender())
 
-    case msg: String =>
-      log.info(s"[TEST MESSAGE]: ${msg}")
-
+      case msg: String =>
+        log.info(s"[TEST MESSAGE]: ${msg}")
   }
 
   // TODO

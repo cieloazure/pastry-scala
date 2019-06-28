@@ -24,4 +24,14 @@ class PastryRoutingTable(val host: Entry, val nodes: Int, val entries: Int) {
   def getTable: Array[Entry] = {
     _state.flatten.filter(_.isDefined).map(_.get)
   }
+
+  def update(nodes: Array[Entry]): Unit = {
+    for(node <- nodes){
+      val prefix: Int = node.id.findCommonPrefix(host.id)
+      if(_state(prefix).length == entries){
+        _state(prefix).drop(1)
+      }
+      _state(prefix) = _state(prefix) :+ Some(node)
+    }
+  }
 }
