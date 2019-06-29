@@ -62,7 +62,7 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
     * @return Option[Type] None in case the key is out of range of leaf set or the leaf set is empty. If the element
     *         is within range, the entry which is closest to the key.
     */
-  def getNode(key: Type, diffFn: (Type, Type) => Int): Option[Type] = {
+  def getNode(key: Type, diffFn: (Type, Type) => Int)(implicit m: ClassTag[Type]): Option[Type] = {
     val low: Option[Type] = lowest
     val high: Option[Type] = highest
 
@@ -116,12 +116,8 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
       }
     }
     val sortedNodes: Array[Type] = nodes.sortWith(compFnBool)
-    val greaterIdx = sortedNodes.zipWithIndex.find(e => compFn(e._1, host) > 0)
-    if(greaterIdx.isDefined){
-      _higher.offerArray(sortedNodes.slice(greaterIdx.get._2, sortedNodes.size))
-      _lower.offerArray(sortedNodes.slice(0, greaterIdx.get._2))
-    } else {
-      _lower.offerArray(sortedNodes)
-    }
+    val (lower, greater) = sortedNodes.partition(e => compFn(e, host) < 0)
+    _higher.offerArray(greater)
+    _lower.offerArray(lower)
   }
 }

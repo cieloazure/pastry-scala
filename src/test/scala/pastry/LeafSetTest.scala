@@ -4,7 +4,7 @@ class LeafSetTest extends UnitSpec {
   "LeafSet" should "get initialized when a new instance is created" in {
     val comp =  (a: Int, b: Int) => a.compareTo(b)
     val leafSet = new LeafSet[Int](5, 5, comp)
-    assert(leafSet.isEmpty)
+    assert(leafSet.lowest.contains(5))
   }
 
   it should "update the lower and higher internal state when updateState is called" in {
