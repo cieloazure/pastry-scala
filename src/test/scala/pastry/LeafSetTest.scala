@@ -47,4 +47,48 @@ class LeafSetTest extends UnitSpec {
     leafSet.updateSet(nodes)
     assert(leafSet.getNode(9,  (a: Int, b: Int) => a - b).isEmpty)
   }
+
+  it should "get the numerically closest node to a given within range of leafSet when getNode is called provided " +
+    "only one lower or higher is not empty here with higher not empty" in {
+    val comp =  (a: Int, b: Int) => a.compareTo(b)
+    val leafSet = new LeafSet[Int](5, 10, comp)
+    val nodes = Array[Int](6, 8, 10)
+    leafSet.updateSet(nodes)
+    assert(leafSet.getNode(9,  (a: Int, b: Int) => a - b).contains(8))
+  }
+
+  it should "get the numerically closest node to a given within range of leafSet when getNode is called provided " +
+    "only one lower or higher is not empty here with lower not empty" in {
+    val comp =  (a: Int, b: Int) => a.compareTo(b)
+    val leafSet = new LeafSet[Int](5, 10, comp)
+    val nodes = Array[Int](0, 2, 3)
+    leafSet.updateSet(nodes)
+    assert(leafSet.getNode(1,  (a: Int, b: Int) => a - b).contains(1))
+  }
+
+  it should "return None when getNode is called while leafSet is empty" in {
+    val comp =  (a: Int, b: Int) => a.compareTo(b)
+    val leafSet = new LeafSet[Int](5, 10, comp)
+    assert(leafSet.getNode(1,  (a: Int, b: Int) => a - b).isEmpty)
+  }
+
+  it should "return correct lowest or higher when only one of lower " +
+    "or higher is non empty here with lower not empty" in {
+    val comp =  (a: Int, b: Int) => a.compareTo(b)
+    val leafSet = new LeafSet[Int](5, 10, comp)
+    val nodes = Array[Int](6, 8, 10)
+    leafSet.updateSet(nodes)
+    assert(leafSet.lowest.contains(5))
+    assert(leafSet.highest.contains(10))
+  }
+
+  it should "return correct lowest or highest when only one of lower or " +
+    "higher is non empty here with higher not empty" in {
+    val comp =  (a: Int, b: Int) => a.compareTo(b)
+    val leafSet = new LeafSet[Int](5, 10, comp)
+    val nodes = Array[Int](0, 2, 3)
+    leafSet.updateSet(nodes)
+    assert(leafSet.lowest.contains(0))
+    assert(leafSet.highest.contains(5))
+  }
 }

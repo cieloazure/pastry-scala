@@ -25,16 +25,30 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
   val _lower = new BoundedPriorityQueue[Type](entries/2, compFn)
   val _higher = new BoundedPriorityQueue[Type](entries/2, compFn)
 
+  /**
+    * Get the lowest element in the leafSet
+    *
+    * @return Option[Type] None if the set is empty or an element if there are elements in the set
+    */
   def lowest: Option[Type] = {
-    _lower.lowest
+    if(_lower.lowest.isDefined) {
+      _lower.lowest
+    } else {
+      Some(host)
+    }
   }
 
+  /**
+    * Get the highest element in the leafSet
+    *
+    * @return Option[Type] None if the set is empty or an element if there are elements in the set
+    */
   def highest: Option[Type] = {
-    _higher.highest
-  }
-
-  def isEmpty: Boolean = {
-    return _lower.isEmpty && _higher.isEmpty
+    if(_higher.highest.isDefined) {
+      _higher.highest
+    } else {
+      Some(host)
+    }
   }
 
   /**
@@ -63,19 +77,9 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
       return None
     }
 
-    val fromLower: (Int, Int) = _lower.map(diffFn(_, key)).zipWithIndex.min
-    val fromHigher: (Int, Int) = _higher.map(diffFn(_, key)).zipWithIndex.min
-    val fromHost = diffFn(host, key)
-
-    val decision = Array[Int](fromLower._1, fromHigher._2, fromHost)
-    decision.zipWithIndex.min._2 match {
-      case 0 =>
-        Some(_lower.get(fromLower._2))
-      case 1 =>
-        Some(_higher.get(fromHigher._2))
-      case 2 =>
-        Some(host)
-    }
+    val leafSet = getSet :+ host
+    val minLeafNode = leafSet.map(diffFn(_, key)).zipWithIndex.min
+    Some(leafSet(minLeafNode._2))
   }
 
   // TODO

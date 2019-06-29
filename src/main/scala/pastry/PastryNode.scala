@@ -28,7 +28,7 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
 
   val _id = new PastryNodeId(myIpAddress, 2)
 
-  var _routingTable = new PastryRoutingTable(Entry(_id, self), PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE)
+  var _routingTable = new PastryRoutingTable(Entry(_id, self), PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE, (e1: Entry, e2: Entry) => e1.compareTo(e2))
   var _leafSet = new LeafSet[Entry](Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE, (e1: Entry, e2: Entry) => e1.compareTo(e2))
   var _neighbourhoodSet = new PastryNeighbourhoodSet(Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE)
 

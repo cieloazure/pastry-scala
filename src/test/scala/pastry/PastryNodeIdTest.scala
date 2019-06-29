@@ -15,6 +15,7 @@ class PastryNodeIdTest extends UnitSpec {
     for((k,v) <- testCases) {
       val nodeId: PastryNodeId = new PastryNodeId(k);
       println(nodeId.getIntBase10)
+      println(v.size)
       assert(nodeId.getHex == v)
     }
   }
