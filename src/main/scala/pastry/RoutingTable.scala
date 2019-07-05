@@ -17,14 +17,18 @@ import scala.util.Random
   * @param prefixFn A function to determine prefix of one type with another
   * @tparam Type A generic type which can be used
   */
-class RoutingTable[Type](val _host: Type, val _nodes: Int, val _entries: Int, val compFn: (Type, Type) => Int, val prefixFn: (Type, Type) => Int) {
+class RoutingTable[Type](val _host: Type,
+                         val _nodes: Int,
+                         val _entries: Int,
+                         val distCompFn: (Type, Type) => Int,
+                         val prefixFn: (Type, Type) => Int) {
 
   val _maxRows: Int = (math.log(_nodes) / math.log(entries)).toInt
   /**
     * _state preserves the rows with prefix defined. Array is 0 based indexing i.e. 0th index contains nodes which
     * contain has matching prefix of length 1 and so on.
     */
-  val _state: Array[BoundedPriorityQueue[Type]] = Array.fill(_maxRows)(new BoundedPriorityQueue[Type](entries, compFn))
+  val _state: Array[BoundedPriorityQueue[Type]] = Array.fill(_maxRows)(new BoundedPriorityQueue[Type](entries, distCompFn))
 
 
   /**
@@ -100,17 +104,19 @@ class RoutingTable[Type](val _host: Type, val _nodes: Int, val _entries: Int, va
     * @param m Implicit class tag paramter
     */
   def updateTable(nodes: Array[Type])(implicit m: ClassTag[Type]) : Unit = {
-    val container = ArrayBuffer.fill[ArrayBuffer[Type]](_maxRows)(ArrayBuffer[Type]())
-    val partitions = nodes.foldLeft(container)((acc, elem) => {
-      val prefix = prefixFn(_host, elem)
-      if(prefix > 0){
-        container(prefix - 1) += elem
+    if(nodes.nonEmpty){
+      val container = ArrayBuffer.fill[ArrayBuffer[Type]](_maxRows)(ArrayBuffer[Type]())
+      val partitions = nodes.foldLeft(container)((acc, elem) => {
+        val prefix = prefixFn(_host, elem)
+        if(prefix > 0){
+          val bound = if(prefix > _maxRows) _maxRows else prefix
+          container(prefix - 1) += elem
+        }
+        container
+      })
+      for((partition, idx) <- partitions.zipWithIndex){
+        _state(idx).offerArray(partition.toArray)
       }
-      container
-    })
-    partitions.drop(1)
-    for((partition, idx) <- partitions.zipWithIndex){
-      _state(idx).offerArray(partition.toArray)
     }
   }
 

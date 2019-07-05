@@ -1,8 +1,9 @@
 package pastry
 
 object PastryConstants {
-  val BASE: Int = 4
-  val TWO_RAISED_TO_BASE: Int = math.pow(2, BASE).toInt
-  val NODES: Int = 4096
+  val B: Int = 3
+  val BASE: Int = math.pow(2, B).toInt
+  val NODES: Int = 64
+  val LENGTH: Int = 5
   val DOUBLE_MODE: Boolean = false
 }

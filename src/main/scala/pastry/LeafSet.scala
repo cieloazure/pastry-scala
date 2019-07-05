@@ -18,12 +18,13 @@ import scala.reflect.ClassTag
   * by BoundedPriorityQUeue.
   * @param host The entry around which the set is partitioned
   * @param entries The maximum entries in the leafSet. Lower and Higher contains half the entries each.
-  * @param compFn The function to decide lower and higher between host or given key
+  * @param distCompFn function to decide lower and higher between host or given key
+  * @param numericCompFn function to decide lower and higher
   * @tparam Type Generic type around which the set is built.
   */
-class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) => Int) {
-  val _lower = new BoundedPriorityQueue[Type](entries/2, compFn)
-  val _higher = new BoundedPriorityQueue[Type](entries/2, compFn)
+class LeafSet[Type](val host: Type, val entries: Int, val distCompFn: (Type, Type) => Int, val numericCompFn: (Type, Type) => Int) {
+  val _lower = new BoundedPriorityQueue[Type](entries/2, distCompFn)
+  val _higher = new BoundedPriorityQueue[Type](entries/2, distCompFn)
 
   /**
     * Get the lowest element in the leafSet
@@ -69,15 +70,15 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
     if(low.isEmpty && high.isEmpty) return None
 
     // Not in leaf set
-    if(low.isDefined && compFn(key, low.get) < 0){
+    if(low.isDefined && numericCompFn(key, low.get) < 0){
       return None
     }
 
-    if(high.isDefined && compFn(key, high.get) > 0){
+    if(high.isDefined && numericCompFn(key, high.get) > 0){
       return None
     }
 
-    val leafSet = getSet :+ host
+    val leafSet = getSet
     val mapping = leafSet.map(diffFn(_, key)).zipWithIndex
     val minLeafNode = mapping.min
     Some(leafSet(minLeafNode._2))
@@ -110,14 +111,14 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
     */
   def updateSet(nodes: Array[Type]): Unit = {
     val compFnBool = (t1: Type, t2: Type) => {
-      compFn(t1, t2) match {
+      distCompFn(t1, t2) match {
         case 0 => false
         case 1 => false
         case _ => true
       }
     }
     val sortedNodes: Array[Type] = nodes.sortWith(compFnBool)
-    val (lower, greater) = sortedNodes.partition(e => compFn(e, host) < 0)
+    val (lower, greater) = sortedNodes.partition(e => numericCompFn(e, host) < 0)
     _higher.offerArray(greater)
     _lower.offerArray(lower)
   }

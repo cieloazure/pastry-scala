@@ -2,18 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3192e13-d774-43df-9cc9-48b4799fa153" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/modules/akka-quickstart-scala.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/pastry.iml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/scala/pastry/Entry2.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/scala/pastry/Location.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/scala/pastry/Main.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/scala/pastry/Entry2Test.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/Entry.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/Entry.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -38,89 +37,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="738">
-              <caret line="82" column="4" selection-start-line="82" selection-start-column="4" selection-end-line="82" selection-end-column="4" />
-              <folding>
-                <element signature="e#16#59#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="27" column="61" selection-start-line="27" selection-start-column="61" selection-end-line="27" selection-end-column="61" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="52" column="40" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="108" column="14" selection-start-line="108" selection-start-column="14" selection-end-line="108" selection-end-column="14" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/UnitSpec.scala">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
-              <caret line="5" column="15" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
+              <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
               <folding>
-                <element signature="e#16#38#0" expanded="true" />
+                <element signature="e#2586#3848#0" />
+                <element signature="e#3876#3996#0" />
+                <element signature="e#4000#4240#0" />
+                <element signature="e#4244#4370#0" />
+                <element signature="e#4244#4385#0" />
+                <element signature="e#4389#4481#0" />
+                <element signature="e#4485#4595#0" />
+                <element signature="e#4599#4703#0" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueueTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="114">
-              <caret line="65" column="73" selection-start-line="65" selection-start-column="73" selection-end-line="65" selection-end-column="73" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/NeighbourhoodSetTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -140,6 +71,10 @@
       <find>filter</find>
       <find>isEm</find>
       <find>isEmpty</find>
+      <find>break</find>
+      <find>host</find>
+      <find>hex2int</find>
+      <find>updateNei</find>
     </findStrings>
     <replaceStrings>
       <replace>PastryNodeId</replace>
@@ -156,7 +91,6 @@
         <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/Constants.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/Main.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNodeId.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeTest.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueue.scala" />
@@ -167,17 +101,22 @@
         <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryRoutingTable.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryNeighbourhoodSetTest.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNeighbourhoodSet.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/Entry.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/scriptFile.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueueTest.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/Location.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/Entry2.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/Main.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/pastry/Entry2Test.scala" />
       </list>
     </option>
   </component>
@@ -189,7 +128,8 @@
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <flattenPackages ProjectPane="true" />
-      <showMembers ProjectPane="true" />
+      <showMembers ProjectPane="false" />
+      <showExcludedFiles Scope="false" ProjectPane="false" />
       <abbreviatePackageNames ProjectPane="true" />
       <autoscrollToSource ProjectPane="true" />
       <autoscrollFromSource ProjectPane="true" />
@@ -234,60 +174,6 @@
               <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
               <item name="pastry" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="BoundedPriorityQueue" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="Entry" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="NeighbourhoodSet" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="PastryConstants$" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="PastryNodeId" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="RoutingTable" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pastry" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -312,6 +198,24 @@
             <path>
               <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="sbt: com.typesafe.akka:akka-actor_2.12:2.6.0-M3:jar" type="70bed36:NamedLibraryElementNode" />
+            </path>
+            <path>
+              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="sbt: com.typesafe.akka:akka-actor_2.12:2.6.0-M3:jar" type="70bed36:NamedLibraryElementNode" />
+              <item name="akka-actor_2.12-2.6.0-M3.jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="sbt: com.typesafe.akka:akka-actor_2.12:2.6.0-M3:jar" type="70bed36:NamedLibraryElementNode" />
+              <item name="akka-actor_2.12-2.6.0-M3.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="actor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
               <item name="sbt: org.scalatest:scalatest_2.12:3.0.5:jar" type="70bed36:NamedLibraryElementNode" />
             </path>
             <path>
@@ -326,31 +230,6 @@
               <item name="sbt: org.scalatest:scalatest_2.12:3.0.5:jar" type="70bed36:NamedLibraryElementNode" />
               <item name="scalatest_2.12-3.0.5.jar" type="462c0819:PsiDirectoryNode" />
               <item name="scalatest" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="sbt: org.scalatest:scalatest_2.12:3.0.5:jar" type="70bed36:NamedLibraryElementNode" />
-              <item name="scalatest_2.12-3.0.5.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="scalatest" type="462c0819:PsiDirectoryNode" />
-              <item name="Transformer" type="ce8f04f3:TypeDefinitionNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="sbt: org.scalatest:scalatest_2.12:3.0.5:jar" type="70bed36:NamedLibraryElementNode" />
-              <item name="scalatest_2.12-3.0.5.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="scalatest" type="462c0819:PsiDirectoryNode" />
-              <item name="OutcomeOf.class" type="6117b065:FileNode" />
-            </path>
-            <path>
-              <item name="akka-quickstart-scala" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="sbt: org.scalatest:scalatest_2.12:3.0.5:jar" type="70bed36:NamedLibraryElementNode" />
-              <item name="scalatest_2.12-3.0.5.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="scalatest" type="462c0819:PsiDirectoryNode" />
-              <item name="OutcomeOf.class" type="6117b065:FileNode" />
-              <item name="OutcomeOf" type="ce8f04f3:TypeDefinitionNode" />
             </path>
           </expand>
           <select />
@@ -391,6 +270,19 @@
     </option>
   </component>
   <component name="RunManager" selected="ScalaTest.ScalaTests in 'pastry'">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="pastry.Main" />
+      <module name="akka-quickstart-scala" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pastry.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
       <module name="pastry" />
       <option name="VM_PARAMETERS" />
@@ -438,6 +330,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Entry2Test.Entry2Test should toInt" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+      <module name="akka-quickstart-scala" />
+      <setting name="path" value="pastry.Entry2Test" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="showProgressMessages" value="true" />
+      <setting name="useSbt" value="false" />
+      <setting name="useUiWithSbt" value="false" />
+      <setting name="jrePath" value="" />
+      <envs />
+      <setting name="testKind" value="Test name" />
+      <setting name="path" value="pastry.Entry2Test" />
+      <setting name="testName" value="Entry2Test should toInt" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="LeafSetTest" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
       <module name="akka-quickstart-scala" />
       <setting name="path" value="pastry.LeafSetTest" />
@@ -452,42 +363,6 @@
       <envs />
       <setting name="testKind" value="Class" />
       <setting name="path" value="pastry.LeafSetTest" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="NeighbourhoodSetTest" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
-      <module name="akka-quickstart-scala" />
-      <setting name="path" value="pastry.NeighbourhoodSetTest" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="showProgressMessages" value="true" />
-      <setting name="useSbt" value="false" />
-      <setting name="useUiWithSbt" value="false" />
-      <setting name="jrePath" value="" />
-      <envs />
-      <setting name="testKind" value="Class" />
-      <setting name="path" value="pastry.NeighbourhoodSetTest" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PastryNodeIdTest" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
-      <module name="akka-quickstart-scala" />
-      <setting name="path" value="pastry.PastryNodeIdTest" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="showProgressMessages" value="true" />
-      <setting name="useSbt" value="false" />
-      <setting name="useUiWithSbt" value="false" />
-      <setting name="jrePath" value="" />
-      <envs />
-      <setting name="testKind" value="Class" />
-      <setting name="path" value="pastry.PastryNodeIdTest" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -526,6 +401,8 @@
       <setting name="package" value="pastry" />
       <buffered bufClass="pastry.BoundedPriorityQueueTest" />
       <buffered bufClass="pastry.BoundedPriorityQueueTest" />
+      <buffered bufClass="pastry.Entry2Test" />
+      <buffered bufClass="pastry.Entry2Test" />
       <buffered bufClass="pastry.LeafSetTest" />
       <buffered bufClass="pastry.LeafSetTest" />
       <buffered bufClass="pastry.NeighbourhoodSetTest" />
@@ -541,10 +418,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="ScalaTest.ScalaTests in 'pastry'" />
-        <item itemvalue="ScalaTest.RoutingTableTest" />
-        <item itemvalue="ScalaTest.PastryNodeIdTest" />
-        <item itemvalue="ScalaTest.NeighbourhoodSetTest" />
+        <item itemvalue="ScalaTest.Entry2Test.Entry2Test should toInt" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="ScalaTest.LeafSetTest" />
+        <item itemvalue="ScalaTest.RoutingTableTest" />
       </list>
     </recent_temporary>
   </component>
@@ -595,35 +472,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="LeafSetTest - 2019.07.05 at 11h 33m 39s.xml">
+    <history-entry file="LeafSetTest - 2019.07.05 at 17h 05m 53s.xml">
       <configuration name="LeafSetTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="BoundedPriorityQueueTest - 2019.07.05 at 11h 35m 49s.xml">
-      <configuration name="BoundedPriorityQueueTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ScalaTests_in_'pastry' - 2019.07.05 at 17h 06m 19s.xml">
+      <configuration name="ScalaTests in 'pastry'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="LeafSetTest - 2019.07.05 at 11h 35m 58s.xml">
-      <configuration name="LeafSetTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="Entry2Test_Entry2Test_should_toInt - 2019.07.05 at 18h 38m 28s.xml">
+      <configuration name="Entry2Test.Entry2Test should toInt" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="NeighbourhoodSetTest - 2019.07.05 at 11h 36m 06s.xml">
-      <configuration name="NeighbourhoodSetTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="Entry2Test_Entry2Test_should_toInt - 2019.07.05 at 18h 41m 50s.xml">
+      <configuration name="Entry2Test.Entry2Test should toInt" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="PastryNodeIdTest - 2019.07.05 at 11h 36m 16s.xml">
-      <configuration name="PastryNodeIdTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="Entry2Test_Entry2Test_should_toInt - 2019.07.05 at 18h 43m 46s.xml">
+      <configuration name="Entry2Test.Entry2Test should toInt" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="RoutingTableTest - 2019.07.05 at 11h 36m 23s.xml">
-      <configuration name="RoutingTableTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ScalaTests_in_'pastry' - 2019.07.05 at 19h 04m 04s.xml">
+      <configuration name="ScalaTests in 'pastry'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="RoutingTableTest - 2019.07.05 at 11h 40m 00s.xml">
-      <configuration name="RoutingTableTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ScalaTests_in_'pastry' - 2019.07.05 at 19h 04m 21s.xml">
+      <configuration name="ScalaTests in 'pastry'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="RoutingTableTest - 2019.07.05 at 11h 40m 04s.xml">
-      <configuration name="RoutingTableTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ScalaTests_in_'pastry' - 2019.07.05 at 19h 04m 44s.xml">
+      <configuration name="ScalaTests in 'pastry'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="RoutingTableTest - 2019.07.05 at 11h 43m 43s.xml">
-      <configuration name="RoutingTableTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ScalaTests_in_'pastry' - 2019.07.05 at 19h 05m 03s.xml">
+      <configuration name="ScalaTests in 'pastry'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="RoutingTableTest - 2019.07.05 at 11h 44m 28s.xml">
-      <configuration name="RoutingTableTest" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ScalaTests_in_'pastry' - 2019.07.05 at 19h 05m 36s.xml">
+      <configuration name="ScalaTests in 'pastry'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -636,7 +513,7 @@
       <window_info id="Favorites" order="3" sideWeight="0.50125" side_tool="true" weight="0.20234375" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.50125" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.50125" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39875" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -682,24 +559,6 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.name" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala</url>
-          <line>54</line>
-          <properties />
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala</url>
-          <line>104</line>
-          <properties />
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
@@ -756,16 +615,6 @@
           <caret line="14" column="66" selection-start-line="14" selection-start-column="66" selection-end-line="14" selection-end-column="66" />
         </state>
       </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-actor_2.12/srcs/akka-actor_2.12-2.6.0-M3-sources.jar!/akka/actor/ActorCell.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="542" column="6" selection-start-line="542" selection-start-column="6" selection-end-line="542" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-actor_2.12/srcs/akka-actor_2.12-2.6.0-M3-sources.jar!/akka/actor/Actor.scala">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.iml">
       <provider selected="true" editor-type-id="text-editor" />
@@ -886,49 +735,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1241">
-          <caret line="222" selection-start-line="222" selection-end-line="222" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/scriptFile.scala">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="50" selection-start-line="9" selection-start-column="50" selection-end-line="9" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Entry.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
-          <folding>
-            <element signature="e#16#42#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="18" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNodeId.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="4" />
-          <folding>
-            <element signature="e#16#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="jar://$USER_HOME$/.ivy2/cache/org.scalatest/scalatest_2.12/srcs/scalatest_2.12-3.0.5-sources.jar!/org/scalatest/FlatSpecLike.scala">
       <provider selected="true" editor-type-id="text-editor">
@@ -951,20 +759,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala">
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="738">
-          <caret line="82" column="4" selection-start-line="82" selection-start-column="4" selection-end-line="82" selection-end-column="4" />
-          <folding>
-            <element signature="e#16#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="27" column="61" selection-start-line="27" selection-start-column="61" selection-end-line="27" selection-end-column="61" />
+        <state relative-caret-position="780">
+          <caret line="52" column="40" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
         </state>
       </provider>
     </entry>
@@ -985,13 +783,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="65" column="73" selection-start-line="65" selection-start-column="73" selection-end-line="65" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/NeighbourhoodSetTest.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -999,24 +790,137 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="27" column="61" selection-start-line="27" selection-start-column="61" selection-end-line="27" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-actor_2.12/srcs/akka-actor_2.12-2.6.0-M3-sources.jar!/akka/actor/ActorCell.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="542" column="6" selection-start-line="542" selection-start-column="6" selection-end-line="542" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-actor_2.12/srcs/akka-actor_2.12-2.6.0-M3-sources.jar!/akka/actor/Actor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="538" column="4" selection-start-line="538" selection-start-column="4" selection-end-line="538" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
+        <state relative-caret-position="105">
           <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Entry.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="18" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
+          <folding>
+            <element signature="e#16#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNodeId.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="52" selection-start-line="52" selection-end-line="52" />
+          <folding>
+            <element signature="e#16#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="74" column="70" selection-start-line="74" selection-start-column="70" selection-end-line="74" selection-end-column="70" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="108" column="14" selection-start-line="108" selection-start-column="14" selection-end-line="108" selection-end-column="14" />
+        <state relative-caret-position="411">
+          <caret line="55" column="6" selection-start-line="55" selection-start-column="6" selection-end-line="55" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="52" column="40" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
+        <state relative-caret-position="78">
+          <caret line="12" column="79" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/Entry2Test.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Main.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="45" selection-start-line="10" selection-start-column="45" selection-end-line="10" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="9" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Location.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="11" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="65" column="14" selection-start-line="65" selection-start-column="14" selection-end-line="65" selection-end-column="14" />
+          <folding>
+            <element signature="e#16#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Entry2.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
+          <folding>
+            <element signature="e#16#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
+          <folding>
+            <element signature="e#2586#3848#0" />
+            <element signature="e#3876#3996#0" />
+            <element signature="e#4000#4240#0" />
+            <element signature="e#4244#4370#0" />
+            <element signature="e#4244#4385#0" />
+            <element signature="e#4389#4481#0" />
+            <element signature="e#4485#4595#0" />
+            <element signature="e#4599#4703#0" />
+          </folding>
         </state>
       </provider>
     </entry>

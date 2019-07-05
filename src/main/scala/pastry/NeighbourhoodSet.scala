@@ -7,11 +7,11 @@ import scala.reflect.ClassTag
   *
   * @param _host Given host
   * @param _entries Number of neighobours to maintain
-  * @param _compFn Comparison function to only keep the top neighbours
+  * @param _distCompFn Comparison function to only keep the top neighbours
   * @tparam Type Type of elements in the set
   */
-class NeighbourhoodSet[Type](val _host: Type, val _entries: Int, val _compFn: (Type, Type) => Int) {
-  var _state: BoundedPriorityQueue[Type] = new BoundedPriorityQueue[Type](size = _entries, comparator = _compFn)
+class NeighbourhoodSet[Type](val _host: Type, val _entries: Int, val _distCompFn: (Type, Type) => Int) {
+  var _state: BoundedPriorityQueue[Type] = new BoundedPriorityQueue[Type](size = _entries, comparator = _distCompFn)
 
   /**
     * Get the entire neighbourhood set
