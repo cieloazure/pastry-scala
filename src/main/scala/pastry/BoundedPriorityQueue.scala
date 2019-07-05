@@ -25,15 +25,7 @@ class BoundedPriorityQueue[Type](size: Int, comparator: (Type, Type) => Int) ext
   }
 
   private def insert(elem: Type): Unit = {
-    val position: Option[(Type, Int)] = _state.zipWithIndex.find(e => comparator(e._1, elem) > 0)
-    val idx: Int = if(position.isDefined) {
-      position.get._2
-    } else {
-      _state.length
-    }
-
-    val (front, back) = _state.splitAt(idx)
-
+    val (front, back) = _state.partition(comparator(_, elem) < 0)
     _state = front :+ elem
     _state = _state ++ back
   }

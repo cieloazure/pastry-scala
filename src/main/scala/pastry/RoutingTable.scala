@@ -18,7 +18,12 @@ import scala.util.Random
   * @tparam Type A generic type which can be used
   */
 class RoutingTable[Type](val _host: Type, val _nodes: Int, val _entries: Int, val compFn: (Type, Type) => Int, val prefixFn: (Type, Type) => Int) {
+
   val _maxRows: Int = (math.log(_nodes) / math.log(entries)).toInt
+  /**
+    * _state preserves the rows with prefix defined. Array is 0 based indexing i.e. 0th index contains nodes which
+    * contain has matching prefix of length 1 and so on.
+    */
   val _state: Array[BoundedPriorityQueue[Type]] = Array.fill(_maxRows)(new BoundedPriorityQueue[Type](entries, compFn))
 
 
@@ -76,6 +81,18 @@ class RoutingTable[Type](val _host: Type, val _nodes: Int, val _entries: Int, va
   }
 
   /**
+    * Get a specific row from the table. This function is required when the intermediate nodes
+    * make a request for a specific row from their routing table as it is the one with whom their prefix match.
+    *
+    * @param idx The row in table to fetch
+    * @param m implicit classtag parameter
+    * @return the nodes contained in that row
+    */
+  def getTableRow(idx: Int)(implicit m: ClassTag[Type]): Array[Type] = {
+    _state(idx).toArray
+  }
+
+  /**
     * Update the routing table with given nodes. This first groups the nodes into their prefixes and updates
     * a row keeping the highest priority nodes only if overflow occurs
     *
@@ -86,12 +103,26 @@ class RoutingTable[Type](val _host: Type, val _nodes: Int, val _entries: Int, va
     val container = ArrayBuffer.fill[ArrayBuffer[Type]](_maxRows)(ArrayBuffer[Type]())
     val partitions = nodes.foldLeft(container)((acc, elem) => {
       val prefix = prefixFn(_host, elem)
-      container(prefix - 1) += elem
+      if(prefix > 0){
+        container(prefix - 1) += elem
+      }
       container
     })
     partitions.drop(1)
     for((partition, idx) <- partitions.zipWithIndex){
       _state(idx).offerArray(partition.toArray)
     }
+  }
+
+  /**
+    * Update the routing table node with the given nodes. This function is required when a node requests from an
+    * intermediate node in the trace the nodes it has at a particular prefix
+    *
+    * @param nodes the nodes with which the specific row is to be updated
+    * @param idx the index of the row in the table
+    * @param m implicit class tag parameter
+    */
+  def updateTableRow(nodes: Array[Type], idx: Int)(implicit m: ClassTag[Type]): Unit = {
+    _state(idx).offerArray(nodes)
   }
 }

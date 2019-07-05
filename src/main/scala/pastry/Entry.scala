@@ -2,9 +2,23 @@ package pastry
 
 import akka.actor.ActorRef
 
-case class Entry(_id: PastryNodeId, _actor: ActorRef) extends Ordered[Entry]{
+import scala.util.Random
+
+case class Entry(_id: PastryNodeId, _actor: ActorRef, _distance: Option[Int] = None) extends Ordered[Entry]{
+  def calcDistance(_hostEntry: Entry) : Int= {
+    // TODO
+    // send a message to _hostEntry._actor
+    // calculate how many hops it took in the network
+    // return that distance
+    if(_distance.isDefined){
+      _distance.get
+    } else {
+      Random.nextInt(20)
+    }
+  }
+
   override def compare(that: Entry): Int = {
-    return _id.compare(that._id)
+    _id.compare(that._id)
   }
 
   def id: PastryNodeId = _id

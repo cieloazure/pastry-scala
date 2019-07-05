@@ -19,7 +19,7 @@ object PastryNode {
   case class NeighbourhoodSetResponse(fromId: PastryNodeId, nbhdSet: Array[Entry])
 
   case class RoutingTableRequest(fromId: PastryNodeId, idx: Option[Int])
-  case class RoutingTableResponse(fromId: PastryNodeId, routingTable: Array[Entry])
+  case class RoutingTableResponse(fromId: PastryNodeId, idx: Option[Int], routingTable: Array[Entry])
 }
 
 class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None) extends Actor with ActorLogging {
@@ -28,9 +28,22 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
 
   val _id = new PastryNodeId(myIpAddress, 2)
 
-  var _routingTable = new PastryRoutingTable(Entry(_id, self), PastryConstants.NODES, PastryConstants.TWO_RAISED_TO_BASE, (e1: Entry, e2: Entry) => e1.compareTo(e2))
-  var _leafSet = new LeafSet[Entry](Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE, (e1: Entry, e2: Entry) => e1.compareTo(e2))
-  var _neighbourhoodSet = new PastryNeighbourhoodSet(Entry(_id, self), PastryConstants.TWO_RAISED_TO_BASE)
+  private val _hostEntry = Entry(_id, self)
+
+  private val _comparator = (e1: Entry, e2: Entry) => {
+    e1.calcDistance(_hostEntry).compareTo(e2.calcDistance(_hostEntry))
+  }
+
+  private val _prefixFn = (e1: Entry, e2: Entry) => {
+    e1.id.findCommonPrefix(e2.id)
+  }
+
+  private val _numEntries = PastryConstants.TWO_RAISED_TO_BASE
+  private val _numRows = PastryConstants.NODES
+
+  val _leafSet = new LeafSet[Entry](_hostEntry, _numEntries, _comparator)
+  val _routingTable = new RoutingTable[Entry](_hostEntry, _numRows, _numEntries, _comparator, _prefixFn)
+  val _neighbourhoodSet = new NeighbourhoodSet[Entry](_hostEntry, _numEntries, _comparator)
 
   override def preStart(): Unit = {
     log.info(s"Starting node with id ${id.getHex}")
@@ -57,7 +70,7 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
     }
 
     // Check routingTable
-    val routingNode = _routingTable.getNode(key)
+    val routingNode = _routingTable.getNode(Entry(key, null))
     if (routingNode.isDefined) {
       return Some(routingNode.get)
     }
@@ -89,13 +102,16 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
     (_routingTable.getTable ++ _leafSet.getSet ++ _neighbourhoodSet.getSet).distinct
   }
 
-  def updateState(nodes: Array[Entry]): Unit = {
+  def updateState(nodes: Array[Entry], idx: Option[Int] = None): Unit = {
     this._leafSet.updateSet(nodes)
-    this._routingTable.update(nodes)
+    if(idx.isEmpty)
+      this._routingTable.updateTable(nodes)
+    else
+      this._routingTable.updateTableRow(nodes, idx.get)
   }
 
   def updateNeighbourhood(nodes: Array[Entry]): Unit = {
-    this._neighbourhoodSet.update(nodes)
+    this._neighbourhoodSet.updateSet(nodes)
     updateState(nodes)
   }
 
@@ -129,17 +145,17 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
       // neighbourhood set can be populated
       trace.head.actor ! NeighbourhoodSetRequest
 
-//      if(trace.length == 1){
-//        // Get the entire routing table and populate routing table
-//        trace.head.actor ! RoutingTableRequest(None)
-//      } else {
-//        // If intermediate nodes present, query these nodes to get
-//        // routing table entries
-//        val middleTrace: Array[Entry] = trace.drop(1).dropRight(1)
-//        for((node, idx) <- middleTrace.zipWithIndex){
-//          node.actor ! RoutingTableRequest(Some(idx))
-//        }
-//      }
+      if(trace.length == 1){
+        // Get the entire routing table and populate routing table
+        trace.head.actor ! RoutingTableRequest(id, None)
+      } else {
+        // If intermediate nodes present, query these nodes to get
+        // routing table entries
+        val middleTrace: Array[Entry] = trace.slice(1, trace.length - 1)
+        for((node, idx) <- middleTrace.zipWithIndex){
+          node.actor ! RoutingTableRequest(id, Some(idx))
+        }
+      }
 
 
     case JoinResponseNotOK(from) =>
@@ -154,25 +170,34 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
       sender() ! NeighbourhoodSetRequest(id)
       sender() ! LeafSetRequest(id)
       sender() ! RoutingTableRequest(id, None)
-//      sendJoinMessage()
+    //      sendJoinMessage()
 
-     case LeafSetRequest(from) =>
-       sender() ! LeafSetResponse(id, _leafSet.getSet)
+    case LeafSetRequest(from) =>
+      log.info(s"[${id.getHex}]Received [LeafSetRequest] from ${from.getHex}")
+      sender() ! LeafSetResponse(id, _leafSet.getSet)
 
-     case LeafSetResponse(from, hisLeafSet) =>
-       updateState(hisLeafSet)
+    case LeafSetResponse(from, hisLeafSet) =>
+      log.info(s"[${id.getHex}]Received [LeafSetResponse] from ${from.getHex}")
+      updateState(hisLeafSet)
 
-     case NeighbourhoodSetRequest(from) =>
-       sender() ! NeighbourhoodSetResponse(id, _neighbourhoodSet.getSet)
+    case NeighbourhoodSetRequest(from) =>
+      log.info(s"[${id.getHex}]Received [NeighbourhoodSetRequest] from ${from.getHex}")
+      sender() ! NeighbourhoodSetResponse(id, _neighbourhoodSet.getSet)
 
-     case NeighbourhoodSetResponse(from, hisNeighbourhoodSet) =>
-       updateNeighbourhood(hisNeighbourhoodSet)
+    case NeighbourhoodSetResponse(from, hisNeighbourhoodSet) =>
+      log.info(s"[${id.getHex}]Received [NeighbourhoodSetResponse] from ${from.getHex}")
+      updateNeighbourhood(hisNeighbourhoodSet)
 
-      case RoutingTableRequest(from, id) =>
-        sender() ! RoutingTableResponse(from, this._routingTable.getTable)
+    case RoutingTableRequest(from, idx) =>
+      log.info(s"[${id.getHex}]Received [RoutingTableRequest] from ${from.getHex}")
+      if(idx.isEmpty)
+        sender() ! RoutingTableResponse(from, idx, this._routingTable.getTable)
+      else
+        sender() ! RoutingTableResponse(from, idx, this._routingTable.getTableRow(idx.get))
 
-      case RoutingTableResponse(from, hisRoutingTable) =>
-       updateState(hisRoutingTable)
+    case RoutingTableResponse(from, idx, hisRoutingTable) =>
+      log.info(s"[${id.getHex}]Received [RoutingTableResponse] from ${from.getHex}")
+      updateState(hisRoutingTable, idx)
 
     // case Route("join", id, trace, replyTo) =>
     //      node = routingLogic()
@@ -183,11 +208,11 @@ class PastryNode(val myIpAddress: String, val seedActor: Option[ActorRef] = None
     //    case Route(msg, key, traceRoute, replyTo) =>
     // routingLogic()
 
-//     case NewNodeJoined(who) =>
-//      updateState(who, sender())
+    //     case NewNodeJoined(who) =>
+    //      updateState(who, sender())
 
-      case msg: String =>
-        log.info(s"[TEST MESSAGE]: ${msg}")
+    case msg: String =>
+      log.info(s"[TEST MESSAGE]: ${msg}")
   }
 
   // TODO

@@ -82,4 +82,7 @@ class RoutingTableTest extends UnitSpec {
     prt.updateTable(nodes)
     assert(prt.getTable sameElements nodes)
   }
+
+  it should "on getTableRow get the specific row from the table" is (pending)
+  it should "on updateTableRow set the particular row in the table" is (pending)
 }

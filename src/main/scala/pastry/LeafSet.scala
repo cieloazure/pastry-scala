@@ -78,7 +78,8 @@ class LeafSet[Type](val host: Type, val entries: Int, val compFn: (Type, Type) =
     }
 
     val leafSet = getSet :+ host
-    val minLeafNode = leafSet.map(diffFn(_, key)).zipWithIndex.min
+    val mapping = leafSet.map(diffFn(_, key)).zipWithIndex
+    val minLeafNode = mapping.min
     Some(leafSet(minLeafNode._2))
   }
 
