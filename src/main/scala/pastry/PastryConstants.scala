@@ -6,4 +6,5 @@ object PastryConstants {
   val NODES: Int = 64
   val LENGTH: Int = 5
   val DOUBLE_MODE: Boolean = false
+  val DISTANCE_THRESHOLD: Int = 5
 }

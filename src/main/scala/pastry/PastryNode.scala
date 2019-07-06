@@ -148,13 +148,13 @@ class PastryNode(val myIpAddress: String,
 
   override def preStart(): Unit = {
     log.info(s"Starting node with id $id at location ${_location.x},${_location.y}")
-    seedEntry.getOrElse({
+    val seedEntryActor = seedEntry.getOrElse({
       // Empty pastry network
       return
-    })
+    })._actor
 
     // At least one pastry node present
-    seedEntry.get._actor ! JoinRequest(_hostEntry)
+    seedEntryActor ! JoinRequest(_hostEntry)
   }
 
 
@@ -163,6 +163,7 @@ class PastryNode(val myIpAddress: String,
       sender() ! id
 
     case JoinRequest(from) =>
+      log.info(s"[${id}]Received [JoinRequest] response from ${from}")
       val node: Option[Entry2] = routingLogic(from._id)
       if(node.isEmpty) {
         sender() ! JoinResponseNotOK(_hostEntry)
@@ -179,7 +180,7 @@ class PastryNode(val myIpAddress: String,
       println(_leafSet.getSet.length + " + " +_routingTable.getTable.length + " + " +_neighbourhoodSet.getSet.length)
 
     case JoinResponseOK(from, trace) =>
-      log.info(s"[${id}]Received OK response from ${from}")
+      log.info(s"[${id}]Received [JoinResponseOK] response from ${from}")
 
       // A suitable node is found which is numerically close
       // can populate leaf set from last node
@@ -204,7 +205,7 @@ class PastryNode(val myIpAddress: String,
 
 
     case JoinResponseNotOK(from) =>
-      log.info(s"[${id}]Received Not OK response from ${from}")
+      log.info(s"[${id}]Received [JoinResponseNotOK] response from ${from}")
 
       // No suitable node found which is numerically close
       // This means that network is sparse
@@ -220,29 +221,30 @@ class PastryNode(val myIpAddress: String,
       sendJoinMessage()
 
     case JoinComplete(from) =>
-      log.info(s"[${id}]Received [JoinComplete] response from ${from}")
+      log.info(s"[${id}] Received [JoinComplete] response from ${from}")
       addNodeToState(from)
+      println(_leafSet.getSet.length + " + " +_routingTable.getTable.length + " + " +_neighbourhoodSet.getSet.length)
 
     case LeafSetRequest(from) =>
-      log.info(s"[${id}]Received [LeafSetRequest] from ${from}")
+      log.info(s"[${id}] Received [LeafSetRequest] from ${from}")
       println(_leafSet.getSet.length + " + " +_routingTable.getTable.length + " + " +_neighbourhoodSet.getSet.length)
       sender() ! LeafSetResponse(_hostEntry, _leafSet.getSet)
 
     case LeafSetResponse(from, hisLeafSet) =>
-      log.info(s"[${id}]Received [LeafSetResponse] from ${from} with ${hisLeafSet.length}")
+      log.info(s"[${id}] Received [LeafSetResponse] from ${from} with ${hisLeafSet.length}")
       updateState(hisLeafSet)
 
     case NeighbourhoodSetRequest(from) =>
-      log.info(s"[${id}]Received [NeighbourhoodSetRequest] from ${from}")
+      log.info(s"[${id}] Received [NeighbourhoodSetRequest] from ${from}")
       println(_leafSet.getSet.length + " + " +_routingTable.getTable.length + " + " +_neighbourhoodSet.getSet.length)
       sender() ! NeighbourhoodSetResponse(_hostEntry, _neighbourhoodSet.getSet)
 
     case NeighbourhoodSetResponse(from, hisNeighbourhoodSet) =>
-      log.info(s"[${id}]Received [NeighbourhoodSetResponse] from ${from} with ${hisNeighbourhoodSet.length}")
+      log.info(s"[${id}] Received [NeighbourhoodSetResponse] from ${from} with ${hisNeighbourhoodSet.length}")
       updateNeighbourhood(hisNeighbourhoodSet)
 
     case RoutingTableRequest(from, idx) =>
-      log.info(s"[${id}]Received [RoutingTableRequest] from ${from}")
+      log.info(s"[${id}] Received [RoutingTableRequest] from ${from}")
       println(_leafSet.getSet.length + " + " +_routingTable.getTable.length + " + " +_neighbourhoodSet.getSet.length)
       if(idx.isEmpty)
         sender() ! RoutingTableResponse(from, idx, this._routingTable.getTable)
@@ -250,7 +252,7 @@ class PastryNode(val myIpAddress: String,
         sender() ! RoutingTableResponse(from, idx, this._routingTable.getTableRow(idx.get))
 
     case RoutingTableResponse(from, idx, hisRoutingTable) =>
-      log.info(s"[${id}]Received [RoutingTableResponse] from ${from} with ${hisRoutingTable.length}")
+      log.info(s"[${id}] Received [RoutingTableResponse] from ${from} with ${hisRoutingTable.length}")
       updateState(hisRoutingTable, idx)
 
     // case Route("join", id, trace, replyTo) =>

@@ -13,7 +13,7 @@ import scala.util.Random
   * @param _host the node around which prefix is matched
   * @param _nodes parameter to decide number of rows required in the table
   * @param _entries parameter to decide number of entries in each row. Think of them as number of columns.
-  * @param compFn As the table is bounded, it will only maintain the nodes with highest priority decided by the compFn
+  * @param distCompFn As the table is bounded, it will only maintain the nodes with highest priority decided by the compFn
   * @param prefixFn A function to determine prefix of one type with another
   * @tparam Type A generic type which can be used
   */
