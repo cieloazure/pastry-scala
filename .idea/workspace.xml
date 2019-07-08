@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3192e13-d774-43df-9cc9-48b4799fa153" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/Main.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/Main.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala" afterDir="false" />
     </list>
@@ -31,31 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1006">
-              <caret line="93" column="21" lean-forward="true" selection-start-line="93" selection-start-column="21" selection-end-line="93" selection-end-column="21" />
-              <folding>
-                <element signature="e#3876#3996#0" />
-                <element signature="e#4000#4240#0" />
-                <element signature="e#4244#4385#0" />
-                <element signature="e#4389#4481#0" />
-                <element signature="e#4485#4595#0" />
-                <element signature="e#4599#4703#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="23" column="3" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
-              <folding>
-                <element signature="e#16#59#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1301">
+              <caret line="192" column="44" selection-start-line="192" selection-start-column="44" selection-end-line="192" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -63,50 +43,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="79" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
+            <state relative-caret-position="-5">
+              <caret line="8" column="52" selection-start-line="8" selection-start-column="52" selection-end-line="8" selection-end-column="52" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="18" column="3" selection-start-line="18" selection-start-column="3" selection-end-line="18" selection-end-column="3" />
+            <state relative-caret-position="1695">
+              <caret line="115" column="7" selection-start-line="115" selection-start-column="7" selection-end-line="115" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Entry.scala">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="29" lean-forward="true" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
+            <state relative-caret-position="738">
+              <caret line="121" column="17" selection-start-line="121" selection-start-column="17" selection-end-line="121" selection-end-column="17" />
               <folding>
-                <element signature="e#16#42#0" expanded="true" />
+                <element signature="e#16#59#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Entry2.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="295">
-              <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
-              <folding>
-                <element signature="e#16#42#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -156,7 +115,6 @@
         <option value="$PROJECT_DIR$/src/main/scala/pastry/Constants.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/Main.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNodeId.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeTest.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueue.scala" />
         <option value="$PROJECT_DIR$/.idea/.name" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryLeafSetTest.scala" />
@@ -169,7 +127,6 @@
         <option value="$PROJECT_DIR$/src/test/scala/scriptFile.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueueTest.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/pastry/LeafSetTest.scala" />
@@ -179,8 +136,10 @@
         <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryConstants.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/Main.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/pastry/PastryNodeTest.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala" />
       </list>
     </option>
   </component>
@@ -569,7 +528,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49875" visible="true" weight="0.25234374" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -596,13 +554,13 @@
       <window_info anchor="right" id="sbt" order="6" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49875" visible="true" weight="0.25234374" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49875" visible="true" weight="0.25234374" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" sideWeight="0.50125" side_tool="true" weight="0.20234375" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.36625" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.50125" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39875" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -724,7 +682,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/PastryNodeTest.scala" />
     <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/Main.scala" />
     <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.12.6-sources.jar!/scala/util/Random.scala">
       <provider selected="true" editor-type-id="text-editor">
@@ -823,13 +780,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="52" column="40" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/UnitSpec.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -837,27 +787,6 @@
           <folding>
             <element signature="e#16#38#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueueTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/NeighbourhoodSetTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="27" column="61" selection-start-line="27" selection-start-column="61" selection-end-line="27" selection-end-column="61" />
         </state>
       </provider>
     </entry>
@@ -872,13 +801,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
           <caret line="538" column="4" selection-start-line="538" selection-start-column="4" selection-end-line="538" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -899,13 +821,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/Entry2Test.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Location.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -917,28 +832,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Main.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="20" selection-start-line="18" selection-start-column="20" selection-end-line="18" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1006">
-          <caret line="93" column="21" lean-forward="true" selection-start-line="93" selection-start-column="21" selection-end-line="93" selection-end-column="21" />
-          <folding>
-            <element signature="e#3876#3996#0" />
-            <element signature="e#4000#4240#0" />
-            <element signature="e#4244#4385#0" />
-            <element signature="e#4389#4481#0" />
-            <element signature="e#4485#4595#0" />
-            <element signature="e#4599#4703#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -962,27 +855,90 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/RoutingTableTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="11" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/NeighbourhoodSetTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/BoundedPriorityQueueTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-320">
+          <caret line="47" column="31" lean-forward="true" selection-start-line="47" selection-start-column="31" selection-end-line="47" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/PastryNodeIdTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/Entry2Test.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/BoundedPriorityQueue.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/pastry/PastryNodeTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="50" column="98" selection-start-line="50" selection-start-column="98" selection-end-line="50" selection-end-column="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/Main.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="20" selection-start-line="18" selection-start-column="20" selection-end-line="18" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5">
+          <caret line="8" column="52" selection-start-line="8" selection-start-column="52" selection-end-line="8" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1695">
+          <caret line="115" column="7" selection-start-line="115" selection-start-column="7" selection-end-line="115" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/LeafSet.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="23" column="3" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
+        <state relative-caret-position="738">
+          <caret line="121" column="17" selection-start-line="121" selection-start-column="17" selection-end-line="121" selection-end-column="17" />
           <folding>
             <element signature="e#16#59#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/NeighbourhoodSet.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/PastryNode.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="79" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/pastry/RoutingTable.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="18" column="3" selection-start-line="18" selection-start-column="3" selection-end-line="18" selection-end-column="3" />
+        <state relative-caret-position="1301">
+          <caret line="192" column="44" selection-start-line="192" selection-start-column="44" selection-end-line="192" selection-end-column="44" />
         </state>
       </provider>
     </entry>

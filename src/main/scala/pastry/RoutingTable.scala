@@ -110,7 +110,7 @@ class RoutingTable[Type](val _host: Type,
         val prefix = prefixFn(_host, elem)
         if(prefix > 0){
           val bound = if(prefix > _maxRows) _maxRows else prefix
-          container(prefix - 1) += elem
+          container(bound - 1) += elem
         }
         container
       })

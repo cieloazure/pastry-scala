@@ -25,9 +25,11 @@ class BoundedPriorityQueue[Type](size: Int, comparator: (Type, Type) => Int) ext
   }
 
   private def insert(elem: Type): Unit = {
-    val (front, back) = _state.partition(comparator(_, elem) < 0)
-    _state = front :+ elem
-    _state = _state ++ back
+    if(!_state.contains(elem)){
+      val (front, back) = _state.partition(comparator(_, elem) < 0)
+      _state = front :+ elem
+      _state = _state ++ back
+    }
   }
 
   def poll: Option[Type] = {
