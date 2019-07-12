@@ -15,7 +15,11 @@ object Main {
     Thread.sleep(5000)
 
     val a3 = system.actorOf(PastryNode.props("127.0.0.3", e2, "3333", Location(0,1)), "third-actor")
-    val e3 = Entry2("3333", a2, Location(0,1))
-    Thread.sleep(2000)
+    val e3 = Entry2("3333", a3, Location(0,1))
+    Thread.sleep(5000)
+
+    val a4 = system.actorOf(PastryNode.props("127.0.0.4", e3, "2122", Location(-1,0)), "fourth-actor")
+    val e4 = Entry2("3333", a3, Location(-1,0))
+//    Thread.sleep(2000)
   }
 }

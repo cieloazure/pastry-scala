@@ -57,20 +57,22 @@ class RoutingTable[Type](val _host: Type,
     // Get common prefix
     val prefix: Int = prefixFn(key, _host)
     if(prefix == 0) return None
-    val rowIdx = if(prefix > _maxRows) {
-      val findStatus = _state.zipWithIndex.reverse.find(_._1.nonEmpty)
+    val rowIdx = if(prefix > _maxRows) { // prefix is greater than # of rows
+      val findStatus = _state.zipWithIndex.reverse.find(_._1.nonEmpty) // Start from last row and find first non empty row
       if(findStatus.isDefined) {
-        findStatus.get._2
+        findStatus.get._2 // Found a non empty row
       } else {
-        -1
+        -1 // Did not find one
       }
     } else {
-      prefix - 1
+      prefix - 1 // prefix is the within our rows range
     }
 
-    if(rowIdx < 0 || _state(rowIdx).isEmpty) return None
+    if(rowIdx < 0 || _state(rowIdx).isEmpty) return None // routing table does not have a value
 
-    val entryIdx = Random.nextInt(_state(rowIdx).size)
+    val entryIdx = Random.nextInt(_state(rowIdx).size) // Get a random node from the row which shares the prefix
+                                                       // TODO: Check if the closest node in the routing table
+                                                       // Can be determined
     Some(_state(rowIdx).get(entryIdx))
   }
 

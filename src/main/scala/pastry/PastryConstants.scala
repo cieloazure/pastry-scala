@@ -4,7 +4,7 @@ object PastryConstants {
   val B: Int = 3
   val BASE: Int = math.pow(2, B).toInt
   val NODES: Int = 64
-  val LENGTH: Int = 5
+  val LENGTH: Int = 4
   val DOUBLE_MODE: Boolean = false
   val DISTANCE_THRESHOLD: Int = 5
 }

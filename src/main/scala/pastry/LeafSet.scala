@@ -95,10 +95,11 @@ class LeafSet[Type](val host: Type, val entries: Int, val distCompFn: (Type, Typ
     * @return Array[Type] The array of elements in the leaf set
     */
   def getSet(implicit  m: ClassTag[Type]): Array[Type] = {
-    var array = ArrayBuffer[Type]()
-    array ++= _lower
-    array ++= _higher
-    array.toArray
+    var buffer = ArrayBuffer[Type]()
+    buffer ++= _lower
+    buffer += host
+    buffer ++= _higher
+    buffer.toArray
   }
 
   /**
