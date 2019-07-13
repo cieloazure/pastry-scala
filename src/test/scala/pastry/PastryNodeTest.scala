@@ -4,7 +4,6 @@ class PastryNodeTest extends UnitSpec {
   behavior of "Pastry Node"
 
   it should "when started without a seedEntry be the only node in the pastry network" in (pending)
-
   it should "when started with a seedEntry send a join request to the seed actor" in (pending)
   it should "when received a join request and all of its states are empty the routing logic will return" +
     "nothing and join response will be not okay" in (pending)

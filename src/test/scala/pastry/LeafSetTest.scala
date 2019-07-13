@@ -21,7 +21,8 @@ class LeafSetTest extends UnitSpec {
     val leafSet = new LeafSet[Int](5, 10, comp, comp)
     val nodes = Array[Int](1,2,3,6,7,8)
     leafSet.updateSet(nodes)
-    assert(leafSet.getSet sameElements nodes)
+    val expected = nodes :+ 5
+    assert(leafSet.getSet.sorted sameElements expected.sorted)
   }
 
   it should "get the numerically closest node to a given key within range of leafSet when getNode is called" in {

@@ -1,14 +1,14 @@
 package pastry
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import pastry.StatisticsNode.JoinStats
 
 object PastryNode {
-  def props(myIpAddress: String, seedEntry: Entry2): Props = Props(new PastryNode(myIpAddress, Some(seedEntry)))
-  def props(myIpAddress: String): Props = Props(new PastryNode(myIpAddress))
-  def props(myIpAddress: String, myId: String, myLocation: Location): Props
-  = Props(new PastryNode(myIpAddress, None, Some(myId), Some(myLocation)))
-  def props(myIpAddress: String, seedEntry: Entry2, myId: String, myLocation: Location): Props
-  = Props(new PastryNode(myIpAddress, Some(seedEntry), Some(myId), Some(myLocation)))
+  def props(myIpAddress: String, myId: String, myLocation: Location, statActor: ActorRef): Props
+  = Props(new PastryNode(myIpAddress, None, Some(myId), Some(myLocation), statsActor = Some(statActor)))
+
+  def props(myIpAddress: String, seedEntry: Entry2, myId: String, myLocation: Location, statActor: ActorRef): Props
+  = Props(new PastryNode(myIpAddress, Some(seedEntry), Some(myId), Some(myLocation), statsActor = Some(statActor)))
 
   case object IdRequest
   case class IdResponse(id: String)
@@ -27,24 +27,29 @@ object PastryNode {
   case class RoutingTableRequest(from: Entry2, idx: Option[Int], purpose: String)
   case class RoutingTableResponse(from: Entry2, idx: Option[Int], routingTable: Array[Entry2], purpose: String)
 
-  case class RouteRequest(from: Entry2, msg: String, trace: Array[Entry2])
+  case class JoinRouteRequest(from: Entry2, trace: Array[Entry2])
+  case class RouteRequest(from: Entry2, msg: String, key: String, trace: Array[Entry2])
+  case class RouteResponseOK(from: Entry2, msg: String, trace: Array[Entry2])
 }
 
 class PastryNode(val myIpAddress: String,
                  val seedEntry: Option[Entry2] = None,
                  val myId: Option[String] = None,
-                 val myLocation: Option[Location] = None
+                 val myLocation: Option[Location] = None,
+                 val statsActor: Option[ActorRef] = None,
                 ) extends Actor
   with ActorLogging {
 
   import PastryNode._
+  import PastryConstants._
 
   val _id: String =  myId.get //new PastryNodeId(myIpAddress)
   val _location: Location = myLocation.get
+  val _statActor: ActorRef = statsActor.get
 
   private val _hostEntry = Entry2(_id, self, _location)
-  private val _numEntries = PastryConstants.BASE
-  private val _numRows = PastryConstants.NODES
+  private val _numEntries = BASE
+  private val _numRows = NODES
 
   val _distanceComparator: (Entry2, Entry2) => Int = (e1: Entry2, e2: Entry2) => {
     e1._location.distance(this._location).compareTo(e2._location.distance(this._location))
@@ -52,6 +57,10 @@ class PastryNode(val myIpAddress: String,
 
   val _numericComparator: (Entry2, Entry2) => Int = (e1: Entry2, e2: Entry2) => {
     e1.toInt(PastryConstants.BASE).compareTo(e2.toInt(PastryConstants.BASE))
+  }
+
+  val _diffFn = (e1: Entry2, e2: Entry2) => {
+    (e1.toInt(PastryConstants.BASE) - e2.toInt(PastryConstants.BASE)).abs
   }
 
   private val _prefixFn = (e1: Entry2, e2: Entry2) => {
@@ -64,25 +73,20 @@ class PastryNode(val myIpAddress: String,
 
   val JOIN = "join"
 
-
-  def routingLogic(key: String): Option[Tuple2[Entry2, String]] = {
+  def routingLogic(key: String): Option[(Entry2, Int)] = {
     // use routingTable, leafSet and neighbourhoodSet for routing and get appropriate node
     val keyEntry = Entry2(key, null, null)
 
-    val diffFn = (e1: Entry2, e2: Entry2) => {
-      (e1.toInt(PastryConstants.BASE) - e2.toInt(PastryConstants.BASE)).abs
-    }
-
     // Check leafSet
-    val leafNode = _leafSet.getNode(keyEntry, diffFn)
+    val leafNode = _leafSet.getNode(keyEntry, _diffFn)
     if (leafNode.isDefined) {
-      return Some(leafNode.get, "FROM_LEAF_SET")
+      return Some(leafNode.get, RoutingStatus.FROM_LEAF_SET)
     }
 
     // Check routingTable
     val routingNode = _routingTable.getNode(keyEntry)
     if (routingNode.isDefined) {
-      return Some(routingNode.get, "FROM_ROUTING_TABLE")
+      return Some(routingNode.get, RoutingStatus.FROM_ROUTING_TABLE)
     }
 
     // Rare case
@@ -95,15 +99,17 @@ class PastryNode(val myIpAddress: String,
     val minCommonPrefix = _prefixFn(keyEntry, _hostEntry)
 
     //filter out combinedState nodes which have common prefix less than current node's id
-    val filtered: Array[Entry2] = combinedState.filter(_prefixFn(keyEntry, _) >= minCommonPrefix).filter(_._id != id)
+    val filtered: Array[Entry2] = combinedState
+                                    .filter(_prefixFn(keyEntry, _) >= minCommonPrefix)
+                                    .filter(_._id != id)
     if(filtered.isEmpty){
       return None
     }
 
     //if any nodes are remaining try to find a node whose difference is less than current node
-    val minIdx: Int = filtered.map(diffFn(_, keyEntry)).zipWithIndex.min._2
+    val minIdx: Int = filtered.map(_diffFn(_, keyEntry)).zipWithIndex.min._2
 
-    Some(filtered(minIdx), "FROM_UNION")
+    Some(filtered(minIdx), RoutingStatus.FROM_UNION)
   }
 
   def id: String = _id
@@ -146,7 +152,7 @@ class PastryNode(val myIpAddress: String,
 
   def sendJoinCompleteMessage(nodes: Array[Entry2]): Unit = {
     for(node <- nodes){
-      if(node._id != id) node._actor ! JoinComplete(_hostEntry)
+      if(node._id != this.id) node._actor ! JoinComplete(_hostEntry)
     }
   }
 
@@ -161,43 +167,45 @@ class PastryNode(val myIpAddress: String,
 
     // At least one pastry node present
     context.become(joinResponseContext)
+
+    // add seedEntry to neighbourhood
     updateNeighbourhood(Array[Entry2](seedEntry.get))
     seedEntryActor ! JoinRequest(_hostEntry)
   }
 
   def waitingForStateResponsesContext(waitingFor: Int): Receive = {
     case LeafSetResponse(from, hisLeafSet, purpose) =>
-      println(s"[${id}] Received [LeafSetResponse] from ${from} with ${hisLeafSet.length}")
+//      println(s"[${id}] Received [LeafSetResponse] from ${from} with ${hisLeafSet.length}")
       updateState(hisLeafSet)
       val remaining = waitingFor - 1
       if(remaining > 0) {
         context.become(waitingForStateResponsesContext(remaining))
       } else {
-        println(s"[$id] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
+//        println(s"[$id] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
         sendJoinCompleteMessage(getUnion)
         context.become(activeContext)
       }
 
     case NeighbourhoodSetResponse(from, hisNeighbourhoodSet, purpose) =>
-      println(s"[${id}] Received [NeighbourhoodSetResponse] from ${from} with ${hisNeighbourhoodSet.length}")
+//      println(s"[${id}] Received [NeighbourhoodSetResponse] from ${from} with ${hisNeighbourhoodSet.length}")
       updateNeighbourhood(hisNeighbourhoodSet)
       val remaining = waitingFor - 1
       if(remaining > 0){
         context.become(waitingForStateResponsesContext(remaining))
       }else{
-        println(s"[$id] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
+//        println(s"[$id] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
         sendJoinCompleteMessage(getUnion)
         context.become(activeContext)
       }
 
     case RoutingTableResponse(from, idx, hisRoutingTable, purpose) =>
-      println(s"[${id}] Received [RoutingTableResponse] from ${from} with ${hisRoutingTable.length}")
+//      println(s"[${id}] Received [RoutingTableResponse] from ${from} with ${hisRoutingTable.length}")
       updateState(hisRoutingTable, idx)
       val remaining = waitingFor - 1
       if(remaining > 0){
         context.become(waitingForStateResponsesContext(remaining))
       }else{
-        println(s"[$id] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
+//        println(s"[$id] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
         sendJoinCompleteMessage(getUnion)
         context.become(activeContext)
       }
@@ -206,6 +214,8 @@ class PastryNode(val myIpAddress: String,
   def joinResponseContext: Receive = {
     case JoinResponseOK(from, trace) =>
       println(s"[${id}] Received [JoinResponseOK] response from ${from}")
+
+      _statActor ! JoinStats(trace.size)
 
       var counter = 0
       // A suitable node is found which is numerically close
@@ -231,6 +241,9 @@ class PastryNode(val myIpAddress: String,
           counter += 1
         }
       }
+      for(_ <- 0 to 5){
+        println()
+      }
       context.become(waitingForStateResponsesContext(counter))
 
 
@@ -247,10 +260,16 @@ class PastryNode(val myIpAddress: String,
       sender() ! LeafSetRequest(_hostEntry, JOIN)
       sender() ! RoutingTableRequest(_hostEntry, None, JOIN)
       addNodeToState(from)
+      for(_ <- 0 to 5){
+        println()
+      }
       context.become(waitingForStateResponsesContext(3))
   }
 
 
+  def deliver(msg: String) = {
+    println(s"[${id}]: Called [Delivery] API: Delivered `$msg`")
+  }
 
   def activeContext: Receive = {
     case IdRequest =>
@@ -260,8 +279,8 @@ class PastryNode(val myIpAddress: String,
       // Initialize trace
       val trace:Array[Entry2] = Array[Entry2](_hostEntry)
       println(s"[${id}] Received [JoinRequest] response from ${from}")
-      val node: Option[(Entry2, String)] = routingLogic(from._id)
-      println(s"[${id}] Routing Logic returned ${node}")
+      val node: Option[(Entry2, Int)] = routingLogic(from._id)
+      println(s"[${id}] [JoinRequest] Routing Logic returned ${node}")
       if(node.isEmpty) {
         sender() ! JoinResponseNotOK(_hostEntry)
       } else {
@@ -269,49 +288,49 @@ class PastryNode(val myIpAddress: String,
           sender() ! JoinResponseOK(_hostEntry, trace)
         } else {
           //node ! Route("join", id, trace, sender())
-          node.get._1._actor ! RouteRequest(from, JOIN, trace)
+          node.get._1._actor ! JoinRouteRequest(from, trace)
         }
       }
 
     case JoinComplete(from) =>
-      println(s"[${id}] Received [JoinComplete] response from ${from}")
+//      println(s"[${id}] Received [JoinComplete] response from ${from}")
       addNodeToState(from)
-      println(s"[${id}] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
+//      println(s"[${id}] Current State:" + _leafSet.getSet.length + "+" + _routingTable.getTable.length + "+" + _neighbourhoodSet.getSet.length)
 
     case LeafSetRequest(from, purpose) =>
-      println(s"[${id}] Received [LeafSetRequest] from ${from}")
+//      println(s"[${id}] Received [LeafSetRequest] from ${from}")
       sender() ! LeafSetResponse(_hostEntry, _leafSet.getSet, purpose)
 
     case LeafSetResponse(from, hisLeafSet, purpose) =>
-      println(s"[${id}] Received [LeafSetResponse] from ${from} with ${hisLeafSet.length}")
+//      println(s"[${id}] Received [LeafSetResponse] from ${from} with ${hisLeafSet.length}")
       updateState(hisLeafSet)
 
     case NeighbourhoodSetRequest(from, purpose) =>
-      println(s"[${id}] Received [NeighbourhoodSetRequest] from ${from}")
+//      println(s"[${id}] Received [NeighbourhoodSetRequest] from ${from}")
       sender() ! NeighbourhoodSetResponse(_hostEntry, _neighbourhoodSet.getSet, purpose)
 
     case NeighbourhoodSetResponse(from, hisNeighbourhoodSet, purpose) =>
-      println(s"[${id}] Received [NeighbourhoodSetResponse] from ${from} with ${hisNeighbourhoodSet.length} entries")
+//      println(s"[${id}] Received [NeighbourhoodSetResponse] from ${from} with ${hisNeighbourhoodSet.length} entries")
       updateNeighbourhood(hisNeighbourhoodSet)
 
     case RoutingTableRequest(from, idx, purpose) =>
-      println(s"[${id}] Received [RoutingTableRequest] from ${from}")
+//      println(s"[${id}] Received [RoutingTableRequest] from ${from}")
       if(idx.isEmpty)
         sender() ! RoutingTableResponse(from, idx, this._routingTable.getTable, purpose)
       else
         sender() ! RoutingTableResponse(from, idx, this._routingTable.getTableRow(idx.get), purpose)
 
     case RoutingTableResponse(from, idx, hisRoutingTable, purpose) =>
-      println(s"[${id}] Received [RoutingTableResponse] from ${from} with ${hisRoutingTable.length} entries")
+//      println(s"[${id}] Received [RoutingTableResponse] from ${from} with ${hisRoutingTable.length} entries")
       updateState(hisRoutingTable, idx)
 
-    case RouteRequest(from, JOIN, trace) =>
+    case JoinRouteRequest(from, trace) =>
       val newTrace = trace :+ _hostEntry
-      println(s"[$id] Received [RouteRequest] with [${JOIN}]")
-      val node: Option[(Entry2, String)] = routingLogic(from._id)
-      println(s"[${id}] Routing Logic returned ${node}")
+      println(s"[$id] Received [RouteRequest] with `[${JOIN}]` message")
+      val node: Option[(Entry2, Int)] = routingLogic(from._id)
+      println(s"[${id}] [JoinRouteRequest]: Routing Logic returned ${node}")
       if(node.isEmpty) {
-        from._actor ! JoinResponseOK(_hostEntry, trace)
+        from._actor ! JoinResponseOK(_hostEntry, newTrace)
       } else {
         if(newTrace.contains(node.get._1)) {
           // Terminates at this node
@@ -320,22 +339,37 @@ class PastryNode(val myIpAddress: String,
           from._actor ! JoinResponseOK(_hostEntry, newTrace)
         } else {
           // Forward to other node
-          node.get._1._actor ! RouteRequest(from, JOIN, newTrace)
+          node.get._1._actor ! JoinRouteRequest(from, newTrace)
         }
       }
 
-    case RouteRequest(from, msg, trace) =>
-      println("routing a message other than join")
+    case RouteRequest(from, msg, key, trace) =>
+      val newTrace = trace :+ _hostEntry
+      println(s"[$id] Received [RouteRequest] with `[${msg}]` message")
+      val node: Option[(Entry2, Int)] = routingLogic(key)
+      println(s"[${id}] Routing Logic returned ${node}")
+      if(node.isEmpty) {
+        deliver(msg)
+        from._actor ! RouteResponseOK(_hostEntry, msg, newTrace)
+      } else {
+        if(newTrace.contains(node.get._1)) {
+          // Terminates at this node
+          // Or sending it back to a previous node
+          // Then terminate
+          deliver(msg)
+          from._actor ! RouteResponseOK(_hostEntry, msg, newTrace)
+        } else {
+          // Forward to other node
+          node.get._1._actor ! RouteRequest(from, msg, key, newTrace)
+        }
+      }
+
+    case RouteResponseOK(from, msg, trace) =>
+      println(s"[${id}]: Received [RouteResponseOK]: Successfully delivered message `$msg` to `${trace.lastOption}`")
 
     case msg: String =>
       println(s"[TEST MESSAGE]: ${msg}")
   }
 
   override def receive: Receive = activeContext
-
-  // TODO
-  // def forward()
-  // def route()
-  // def distance(other: Actor[PastryNode])
-
 }

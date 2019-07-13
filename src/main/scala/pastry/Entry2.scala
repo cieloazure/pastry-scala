@@ -19,27 +19,30 @@ case class Entry2(_id: String, _actor: ActorRef, _location: Location){
   }
 
   def toInt(base: Int): Int = {
-    val limit = base
+    val digits = getDigitString(base)
+    _id.toList.map(digits.indexOf(_)).reduceLeft(_ * base + _)
+  }
+
+  private def getDigitString(limit: Int) = {
     val digits: StringBuilder = new StringBuilder("")
-    val (newLimit, rest) = if(limit > 10){
+    val (newLimit, rest) = if (limit > 10) {
       (10, limit - 10)
-    }else{
+    } else {
       (limit, -1)
     }
 
     var start = '0'
-    for(i <- 0 to newLimit){
+    for (i <- 0 to newLimit) {
       digits += (start + i).toChar
     }
 
-    if(rest > -1){
+    if (rest > -1) {
       start = 'a'
-      for(i <- 0 to rest){
+      for (i <- 0 to rest) {
         digits += (start + i).toChar
       }
     }
-
-    _id.toList.map(digits.indexOf(_)).reduceLeft(_ * limit + _)
+    digits.toString
   }
 }
 

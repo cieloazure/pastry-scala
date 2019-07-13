@@ -95,7 +95,13 @@ class RoutingTable[Type](val _host: Type,
     * @return the nodes contained in that row
     */
   def getTableRow(idx: Int)(implicit m: ClassTag[Type]): Array[Type] = {
-    _state(idx).toArray
+    val bdIdx: Int = boundIdx(idx)
+    _state(bdIdx).toArray
+  }
+
+  private def boundIdx(idx: Int) = {
+    val bdIdx = if (idx >= _maxRows) _maxRows - 1 else idx
+    bdIdx
   }
 
   /**
@@ -131,6 +137,7 @@ class RoutingTable[Type](val _host: Type,
     * @param m implicit class tag parameter
     */
   def updateTableRow(nodes: Array[Type], idx: Int)(implicit m: ClassTag[Type]): Unit = {
-    _state(idx).offerArray(nodes)
+    val bdIdx: Int = boundIdx(idx)
+    _state(bdIdx).offerArray(nodes)
   }
 }
