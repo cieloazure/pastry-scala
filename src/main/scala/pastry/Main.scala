@@ -63,7 +63,7 @@ object Main {
   def randomIntString(length: Int): String = {
     val digits = getDigitString(PastryConstants.BASE)
     val intString = new StringBuilder("")
-    for(x <- 0 until length){
+    for(_ <- 0 until length){
       intString += digits.charAt(Random.nextInt(digits.length))
     }
     intString.toString
@@ -97,37 +97,5 @@ object Main {
     val statActor = system.actorOf(StatisticsNode.props)
     buildNetwork(system, statActor)
     statActor ! AvgJoinHopsRequest
-
-//    val system = ActorSystem("pastry")
-//
-//    val a1 = system.actorOf(PastryNode.props("127.0.0.1", "1111",
-//      Location(0,0)), "first-actor")
-//    val e1 = Entry2("1111", a1, Location(0,0))
-//    Thread.sleep(2000)
-//
-//    val a2 = system.actorOf(PastryNode.props("127.0.0.2", e1, "2222",
-//      Location(1,0)), "second-actor")
-//    val e2 = Entry2("2222", a2, Location(1,0))
-//    Thread.sleep(5000)
-//
-//    val a3 = system.actorOf(PastryNode.props("127.0.0.3", e2, "3333",
-//      Location(0,1)), "third-actor")
-//    val e3 = Entry2("3333", a3, Location(0,1))
-//    Thread.sleep(5000)
-//
-//    val a4 = system.actorOf(PastryNode.props("127.0.0.4", e3, "2122",
-//      Location(-1,0)), "fourth-actor")
-//    val e4 = Entry2("2122", a4, Location(-1,0))
-//    Thread.sleep(5000)
-//
-//    val a5 = system.actorOf(PastryNode.props("127.0.0.5", e4, "1322",
-//      Location(0,-1)), "fifth-actor")
-//    val e5 = Entry2("1322", a5, Location(-1,0))
-//    Thread.sleep(5000)
-//
-//    val a6 = system.actorOf(PastryNode.props("127.0.0.5", e5, "3156",
-//      Location(1,1)), "sixth-actor")
-//    val e6 = Entry2("3156", a6, Location(-1,0))
-//    Thread.sleep(5000)
   }
 }

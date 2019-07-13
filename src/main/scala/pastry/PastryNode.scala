@@ -22,7 +22,7 @@ object PastryNode {
   case class LeafSetResponse(from: Entry2, leafSet: Array[Entry2], purpose: String)
 
   case class NeighbourhoodSetRequest(from: Entry2, purpose: String)
-  case class NeighbourhoodSetResponse(from: Entry2, nbhdSet: Array[Entry2], purpose: String)
+  case class NeighbourhoodSetResponse(from: Entry2, neighbourhoodSet: Array[Entry2], purpose: String)
 
   case class RoutingTableRequest(from: Entry2, idx: Option[Int], purpose: String)
   case class RoutingTableResponse(from: Entry2, idx: Option[Int], routingTable: Array[Entry2], purpose: String)
@@ -75,6 +75,7 @@ class PastryNode(val myIpAddress: String,
 
   def routingLogic(key: String): Option[(Entry2, Int)] = {
     // use routingTable, leafSet and neighbourhoodSet for routing and get appropriate node
+    // dummy entry node
     val keyEntry = Entry2(key, null, null)
 
     // Check leafSet
@@ -162,8 +163,6 @@ class PastryNode(val myIpAddress: String,
       // Empty pastry network
       return
     })._actor
-
-    // TODO: Maybe spawn a join actor
 
     // At least one pastry node present
     context.become(joinResponseContext)
