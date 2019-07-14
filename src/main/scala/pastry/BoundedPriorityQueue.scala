@@ -1,46 +1,46 @@
 package pastry
 
 // TODO
-// Implement with Heaps later
+// Optimize
 
-class BoundedPriorityQueue[Type](size: Int, comparator: (Type, Type) => Int) extends Iterable[Type]{
-  var _state: List[Type] = List[Type]()
+class BoundedPriorityQueue[Type](size: Int, comparator: (Type, Type) => Boolean)
+                                (implicit initElements: Option[List[Type]] = None) extends Iterable[Type]{
+  private val _temp_state: List[Type] = initElements.getOrElse(List[Type]()).sortWith(comparator)
+  val _state: List[Type] = if(_temp_state.size > size) {
+    _temp_state.drop(_temp_state.size - size)
+  } else {
+    _temp_state
+  }
 
-  def offer(elem: Type): Unit = {
+
+  def offer(elem: Type): BoundedPriorityQueue[Type] = {
     insert(elem)
-    bound
   }
 
-  def offerArray(elements: Array[Type]): Unit = {
-    for(elem <- elements){
-      insert(elem)
-    }
-    bound
+  def offerArray(elements: Array[Type]): BoundedPriorityQueue[Type] = {
+    insertMany(elements)
   }
 
-  private def bound: Unit = {
-    while(_state.size > size){
-      poll
-    }
-  }
-
-  private def insert(elem: Type): Unit = {
-    if(!_state.contains(elem)){
-      val (front, back) = _state.partition(comparator(_, elem) < 0)
-      _state = front :+ elem
-      _state = _state ++ back
-    }
-  }
-
-  def poll: Option[Type] = {
+  def poll: Option[(Type, BoundedPriorityQueue[Type])] = {
     if(_state.isEmpty) return None
     val min: Type = _state.head
-    _state = _state.drop(1)
-    Some(min)
+    val _newState = _state.drop(1)
+    val newInstance = new BoundedPriorityQueue[Type](size, comparator)(Some(_newState))
+    Some(min, newInstance)
   }
 
   def get(idx: Int): Type = {
     _state(idx)
+  }
+
+  private def insert(elem: Type): BoundedPriorityQueue[Type] = {
+    val _newState = (elem :: _state).distinct
+    new BoundedPriorityQueue[Type](size, comparator)(Some(_newState))
+  }
+
+  private def insertMany(elems: Array[Type]): BoundedPriorityQueue[Type] = {
+    val _newState = (_state ++ elems).distinct
+    new BoundedPriorityQueue[Type](size, comparator)(Some(_newState))
   }
 
   override def foreach[U](f: Type => U): Unit = {

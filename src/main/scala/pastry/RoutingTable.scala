@@ -20,15 +20,18 @@ import scala.util.Random
 class RoutingTable[Type](val _host: Type,
                          val _nodes: Int,
                          val _entries: Int,
-                         val distCompFn: (Type, Type) => Int,
-                         val prefixFn: (Type, Type) => Int) {
+                         val distCompFn: (Type, Type) => Boolean,
+                         val prefixFn: (Type, Type) => Int)
+                        (implicit state: Option[Array[BoundedPriorityQueue[Type]]] = None) {
 
   val _maxRows: Int = (math.log(_nodes) / math.log(entries)).toInt
   /**
     * _state preserves the rows with prefix defined. Array is 0 based indexing i.e. 0th index contains nodes which
     * contain has matching prefix of length 1 and so on.
     */
-  val _state: Array[BoundedPriorityQueue[Type]] = Array.fill(_maxRows)(new BoundedPriorityQueue[Type](entries, distCompFn))
+  val _state: Array[BoundedPriorityQueue[Type]] = state.getOrElse(
+    Array.fill(_maxRows)(new BoundedPriorityQueue[Type](entries, distCompFn))
+  )
 
 
   /**
@@ -53,7 +56,7 @@ class RoutingTable[Type](val _host: Type,
     * @return None when no prefix is shared or prefix doesn't have any entries in that row of the routing table
     *         A node which shares a prefix with the key
     */
-  def getNode(key: Type): Option[Type] = {
+  def query(key: Type)(implicit m: ClassTag[Type]): Option[Type] = {
     // Get common prefix
     val prefix: Int = prefixFn(key, _host)
     if(prefix == 0) return None
@@ -82,7 +85,7 @@ class RoutingTable[Type](val _host: Type,
     * @param m Implicit class tag parameter
     * @return Array of nodes in the routing table
     */
-  def getTable(implicit m: ClassTag[Type]): Array[Type] = {
+  def getAllElem(implicit m: ClassTag[Type]): Array[Type] = {
     _state.flatten
   }
 
@@ -94,11 +97,19 @@ class RoutingTable[Type](val _host: Type,
     * @param m implicit classtag parameter
     * @return the nodes contained in that row
     */
-  def getTableRow(idx: Int)(implicit m: ClassTag[Type]): Array[Type] = {
+  def getAllElemFromRow(idx: Int)(implicit m: ClassTag[Type]): Array[Type] = {
     val bdIdx: Int = boundIdx(idx)
     _state(bdIdx).toArray
   }
 
+  /**
+    * Routing table contains only _maxRows of rows based on config
+    * If prefix match is greater then bound the match to _maxRows - 1
+    * to avoid out of range errors.
+    *
+    * @param idx
+    * @return
+    */
   private def boundIdx(idx: Int) = {
     val bdIdx = if (idx >= _maxRows) _maxRows - 1 else idx
     bdIdx
@@ -111,20 +122,25 @@ class RoutingTable[Type](val _host: Type,
     * @param nodes The nodes to update the routing table with
     * @param m Implicit class tag paramter
     */
-  def updateTable(nodes: Array[Type])(implicit m: ClassTag[Type]) : Unit = {
+  def update(nodes: Array[Type])(implicit m: ClassTag[Type]) : RoutingTable[Type] = {
     if(nodes.nonEmpty){
       val container = ArrayBuffer.fill[ArrayBuffer[Type]](_maxRows)(ArrayBuffer[Type]())
       val partitions = nodes.foldLeft(container)((acc, elem) => {
         val prefix = prefixFn(_host, elem)
         if(prefix > 0){
           val bound = if(prefix > _maxRows) _maxRows else prefix
-          container(bound - 1) += elem
+          acc(bound - 1) += elem
         }
-        container
+        acc
       })
+
+      val _newState = ArrayBuffer[BoundedPriorityQueue[Type]]()
       for((partition, idx) <- partitions.zipWithIndex){
-        _state(idx).offerArray(partition.toArray)
+        _newState += _state(idx).offerArray(partition.toArray)
       }
+      new RoutingTable[Type](_host, _nodes, _entries, distCompFn, prefixFn)(Some(_newState.toArray))
+    }else{
+      this
     }
   }
 
@@ -136,8 +152,57 @@ class RoutingTable[Type](val _host: Type,
     * @param idx the index of the row in the table
     * @param m implicit class tag parameter
     */
-  def updateTableRow(nodes: Array[Type], idx: Int)(implicit m: ClassTag[Type]): Unit = {
-    val bdIdx: Int = boundIdx(idx)
-    _state(bdIdx).offerArray(nodes)
+  def updateRow(nodes: Array[Type], idx: Int)(implicit m: ClassTag[Type]): RoutingTable[Type] = {
+    if(nodes.nonEmpty) {
+      val qualifiedNodes = nodes.filter(prefixFn(_host, _) >= idx)
+      val bdIdx: Int = boundIdx(idx)
+      val _newState = ArrayBuffer[BoundedPriorityQueue[Type]]()
+      for((row, idx) <- _state.zipWithIndex) {
+        if(idx != bdIdx) {
+          _newState += row
+        } else {
+          _newState += row.offerArray(nodes)
+        }
+      }
+      new RoutingTable[Type](_host, _nodes, _entries, distCompFn, prefixFn)(Some(_newState.toArray))
+    } else {
+      this
+    }
+  }
+
+
+  /**
+    * In which row of the routing table does the element belong
+    * @param elem
+    * @return
+    */
+  def inWhichRow(elem: Type)(implicit m: ClassTag[Type]): Option[Int] = {
+    val status: Option[(BoundedPriorityQueue[Type], Int)] = _state.zipWithIndex.find(queue => queue._1.exists(_ == elem))
+    if(status.isDefined) {
+      Some(status.get._2)
+    } else {
+      None
+    }
+  }
+
+  /**
+    * Remove element from the routing table if it exists in it.
+    *
+    * @param elem
+    * @return
+    */
+  def removeElem(elem: Type)(implicit m: ClassTag[Type]): Option[RoutingTable[Type]] = {
+    inWhichRow(elem) match {
+      case None =>
+        None
+
+      case Some(idx) =>
+        val _row: Array[Type] = getAllElemFromRow(idx)
+        val _newRowElems = _row.filter(_ != elem).toList
+        val _newRow = new BoundedPriorityQueue[Type](entries, distCompFn)(Some(_newRowElems))
+        val _newState = _state.updated(idx, _newRow)
+        val _newRoutingTable = new RoutingTable[Type](_host, _nodes, _entries, distCompFn, prefixFn)(Some(_newState))
+        Some(_newRoutingTable)
+    }
   }
 }

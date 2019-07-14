@@ -10,8 +10,14 @@ import scala.reflect.ClassTag
   * @param _distCompFn Comparison function to only keep the top neighbours
   * @tparam Type Type of elements in the set
   */
-class NeighbourhoodSet[Type](val _host: Type, val _entries: Int, val _distCompFn: (Type, Type) => Int) {
-  var _state: BoundedPriorityQueue[Type] = new BoundedPriorityQueue[Type](size = _entries, comparator = _distCompFn)
+class NeighbourhoodSet[Type](val _host: Type,
+                             val _entries: Int,
+                             val _distCompFn: (Type, Type) => Boolean)
+                            (implicit state: Option[BoundedPriorityQueue[Type]] = None) {
+
+  var _state: BoundedPriorityQueue[Type] = state.getOrElse(
+    new BoundedPriorityQueue[Type](size = _entries, comparator = _distCompFn)
+  )
 
   /**
     * Get the entire neighbourhood set
@@ -19,7 +25,7 @@ class NeighbourhoodSet[Type](val _host: Type, val _entries: Int, val _distCompFn
     * @param m Implicit class tag parameter
     * @return the set of elements in the neighbourhood
     */
-  def getSet(implicit m: ClassTag[Type]): Array[Type] = {
+  def getAllElem(implicit m: ClassTag[Type]): Array[Type] = {
     _state.toArray
   }
 
@@ -28,8 +34,10 @@ class NeighbourhoodSet[Type](val _host: Type, val _entries: Int, val _distCompFn
     *
     * @param nodes The nodes of the elements to be updated with
     */
-  def updateSet(nodes: Array[Type]): Unit = {
-    _state.offerArray(nodes)
+  def update(nodes: Array[Type])(implicit m: ClassTag[Type]): NeighbourhoodSet[Type] = {
+    val _validNodes = nodes.filter(_ != _host)
+    val _newState = _state.offerArray(_validNodes)
+    new NeighbourhoodSet[Type](_host, _entries, _distCompFn)(Some(_newState))
   }
 
   /**
@@ -49,4 +57,26 @@ class NeighbourhoodSet[Type](val _host: Type, val _entries: Int, val _distCompFn
   def size: Int = {
     _state.size
   }
+
+  def getElem(key: Type)(implicit m: ClassTag[Type]): Option[Type] = {
+    None
+  }
+
+
+  /**
+    *
+    * @param elem
+    * @return
+    */
+  def removeElem(elem: Type)(implicit m: ClassTag[Type]): Option[NeighbourhoodSet[Type]] = {
+    val oldElems = _state.toArray
+    val newElems = oldElems.filter(_ != elem)
+    if(newElems.length == oldElems.length) {
+      None
+    } else {
+      val _newState = new BoundedPriorityQueue[Type](newElems.size, _distCompFn)(Some(newElems.toList))
+      Some(new NeighbourhoodSet[Type](_host, _entries, _distCompFn)(Some(_newState)))
+    }
+  }
+
 }

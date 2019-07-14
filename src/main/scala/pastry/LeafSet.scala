@@ -22,9 +22,15 @@ import scala.reflect.ClassTag
   * @param numericCompFn function to decide lower and higher
   * @tparam Type Generic type around which the set is built.
   */
-class LeafSet[Type](val host: Type, val entries: Int, val distCompFn: (Type, Type) => Int, val numericCompFn: (Type, Type) => Int) {
-  val _lower = new BoundedPriorityQueue[Type](entries/2, distCompFn)
-  val _higher = new BoundedPriorityQueue[Type](entries/2, distCompFn)
+class LeafSet[Type](val host: Type,
+                    val entries: Int,
+                    val distCompFn: (Type, Type) => Boolean,
+                    val numericCompFn: (Type, Type) => Boolean,
+                    val diffFn: (Type, Type) => Int)
+                   (implicit lower: Option[BoundedPriorityQueue[Type]] = None,
+                    higher: Option[BoundedPriorityQueue[Type]] = None) {
+  val _lower: BoundedPriorityQueue[Type] = lower.getOrElse(new BoundedPriorityQueue[Type](entries/2, distCompFn))
+  val _higher: BoundedPriorityQueue[Type] = higher.getOrElse(new BoundedPriorityQueue[Type](entries/2, distCompFn))
 
   /**
     * Get the lowest element in the leafSet
@@ -59,26 +65,25 @@ class LeafSet[Type](val host: Type, val entries: Int, val distCompFn: (Type, Typ
     * the entry with closest distance is returned. The closest distance is determined by the difference function
     * which determined the distance between the element and key.
     * @param key Argument to which closest entry in the leaf set is to be found
-    * @param diffFn Function to determine the distance between the key and element of leaf set
     * @return Option[Type] None in case the key is out of range of leaf set or the leaf set is empty. If the element
     *         is within range, the entry which is closest to the key.
     */
-  def getNode(key: Type, diffFn: (Type, Type) => Int)(implicit m: ClassTag[Type]): Option[Type] = {
+  def query(key: Type)(implicit m: ClassTag[Type]): Option[Type] = {
     val low: Option[Type] = lowest
     val high: Option[Type] = highest
 
     if(low.isEmpty && high.isEmpty) return None
 
     // Not in leaf set
-    if(low.isDefined && numericCompFn(key, low.get) < 0){
+    if(low.isDefined && numericCompFn(key, low.get)){
       return None
     }
 
-    if(high.isDefined && numericCompFn(key, high.get) > 0){
+    if(high.isDefined && numericCompFn(high.get, key)){
       return None
     }
 
-    val leafSet = getSet :+ host
+    val leafSet = getAllElem :+ host
     val mapping = leafSet.map(diffFn(_, key)).zipWithIndex
     val minLeafNode = mapping.min
     Some(leafSet(minLeafNode._2))
@@ -94,7 +99,7 @@ class LeafSet[Type](val host: Type, val entries: Int, val distCompFn: (Type, Typ
     * @param m Implicit parameter to return an array of generic type
     * @return Array[Type] The array of elements in the leaf set
     */
-  def getSet(implicit  m: ClassTag[Type]): Array[Type] = {
+  def getAllElem(implicit  m: ClassTag[Type]): Array[Type] = {
     var buffer = ArrayBuffer[Type]()
     buffer ++= _lower
     buffer += host
@@ -110,17 +115,80 @@ class LeafSet[Type](val host: Type, val entries: Int, val distCompFn: (Type, Typ
     *              insertion of nodes in the leafSet. If the entries of the lower and upper arrays are full
     *              only the nodes closest to the host are kept
     */
-  def updateSet(nodes: Array[Type]): Unit = {
-    val compFnBool = (t1: Type, t2: Type) => {
-      distCompFn(t1, t2) match {
-        case 0 => false
-        case 1 => false
-        case _ => true
-      }
+  def update(nodes: Array[Type])(implicit m: ClassTag[Type]): LeafSet[Type] = {
+    val validNodes = nodes.filter(_ != host)
+    val (lower, greater) = validNodes.partition(e => numericCompFn(e, host))
+    val _newLower: BoundedPriorityQueue[Type] = _lower.offerArray(lower)
+    val _newHigher: BoundedPriorityQueue[Type] = _higher.offerArray(greater)
+    new LeafSet[Type](host, entries, distCompFn, numericCompFn, diffFn)(Some(_newLower), Some(_newHigher))
+  }
+
+  /**
+    * In which partition - lower or upper - does the element belong
+    * Useful to query the extreme
+    *
+    * @param elem
+    * @return
+    */
+  def inWhichPartition(elem: Type): Option[Int] = {
+    if(elem == host){
+      Some(0)
+    } else if(_lower.exists(_ == elem)){
+      Some(-1)
+    } else if(_higher.exists(_ == elem)){
+      Some(1)
+    } else {
+      None
     }
-    val sortedNodes: Array[Type] = nodes.sortWith(compFnBool)
-    val (lower, greater) = sortedNodes.partition(e => numericCompFn(e, host) < 0)
-    _higher.offerArray(greater)
-    _lower.offerArray(lower)
+  }
+
+  /**
+    * Remove the element from the leafSet and return a new leafSet
+    *
+    * @param elem
+    * @return
+    */
+  def removeElem(elem: Type): Option[LeafSet[Type]] = {
+    inWhichPartition(elem) match {
+      case Some(0) =>
+        None
+
+      case None =>
+        None
+
+      case Some(-1) =>
+        val _init_lower = _lower.filter(_ != elem).toList
+        val _newLower = new BoundedPriorityQueue[Type](_init_lower.size, distCompFn)(Some(_init_lower))
+        val _newLeafSet = new LeafSet[Type](host, entries - 1, distCompFn, numericCompFn, diffFn)(Some(_newLower), Some(_higher))
+        Some(_newLeafSet)
+
+      case Some(1) =>
+        val _init_higher = _higher.filter(_ != elem).toList
+        val _newHigher = new BoundedPriorityQueue[Type](_init_higher.size, distCompFn)(Some(_init_higher))
+        val _newLeafSet = new LeafSet[Type](host, entries - 1, distCompFn, numericCompFn, diffFn)(Some(_lower), Some(_newHigher))
+        Some(_newLeafSet)
+    }
+  }
+
+  /**
+    * Get the lower half of the leafSet
+    *
+    * @return
+    */
+  def getLower(implicit m: ClassTag[Type]): Array[Type] = {
+    var buffer = ArrayBuffer[Type]()
+    buffer ++= _lower
+    buffer.toArray
+  }
+
+  /**
+    * Get the upper half of the leafSet
+    *
+    * @return
+    */
+  def getHigher(implicit m: ClassTag[Type]): Array[Type] = {
+    var buffer = ArrayBuffer[Type]()
+    buffer ++= _higher
+    buffer.toArray
   }
 }

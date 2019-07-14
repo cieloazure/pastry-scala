@@ -4,13 +4,9 @@ import akka.actor.{Actor, Props}
 
 object StatisticsNode{
   def props: Props = Props(new StatisticsNode)
-
-  case class JoinStats(hopsRequiredForJoin: Int)
-  case object AvgJoinHopsRequest
-  case class AvgJoinHopsResponse(avgHops: Int)
 }
 class StatisticsNode extends Actor {
-  import StatisticsNode._
+  import Node._
 
   def statsContext(currentSum: Int, currentRecordings: Int): Receive = {
     case JoinStats(hopsRequiredForJoin) =>

@@ -1,7 +1,7 @@
 package pastry
 
-import org.scalatest._
 import org.scalamock.scalatest.MockFactory
+import org.scalatest._
 
 abstract class UnitSpec
   extends FlatSpec

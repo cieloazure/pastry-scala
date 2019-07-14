@@ -1,26 +1,48 @@
 package pastry
 
 import akka.actor.ActorRef
+import util.control.Breaks._
 
-import scala.util.Random
-
-case class Entry(_id: PastryNodeId, _actor: ActorRef, _distance: Option[Int] = None) extends Ordered[Entry]{
-  def calcDistance(_hostEntry: Entry) : Int= {
-    // TODO
-    // send a message to _hostEntry._actor
-    // calculate how many hops it took in the network
-    // return that distance
-    if(_distance.isDefined){
-      _distance.get
-    } else {
-      Random.nextInt(20)
+case class Entry(_id: String, _actor: ActorRef, _location: Location){
+  def findCommonPrefix(that: Entry): Int = {
+    var prefix = 0
+    breakable {
+      for(pair <- this._id.zip(that._id)){
+        if(pair._1 == pair._2) {
+          prefix += 1
+        } else {
+          break
+        }
+      }
     }
+    prefix
   }
 
-  override def compare(that: Entry): Int = {
-    _id.compare(that._id)
+  def toInt(base: Int): Int = {
+    val digits = getDigitString(base)
+    _id.toList.map(digits.indexOf(_)).reduceLeft(_ * base + _)
   }
 
-  def id: PastryNodeId = _id
-  def actor: ActorRef = _actor
+  private def getDigitString(limit: Int) = {
+    val digits: StringBuilder = new StringBuilder("")
+    val (newLimit, rest) = if (limit > 10) {
+      (10, limit - 10)
+    } else {
+      (limit, -1)
+    }
+
+    var start = '0'
+    for (i <- 0 to newLimit) {
+      digits += (start + i).toChar
+    }
+
+    if (rest > -1) {
+      start = 'a'
+      for (i <- 0 to rest) {
+        digits += (start + i).toChar
+      }
+    }
+    digits.toString
+  }
 }
+
