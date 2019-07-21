@@ -1,12 +1,12 @@
 package pastry
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 object Main {
-  def buildNetwork(system: ActorSystem, statActor: ActorRef): Unit = {
+  def buildNetwork(system: ActorSystem, statActor: ActorRef): Array[Entry] = {
     val ips = getIps
     val ids = getIds
 
@@ -29,9 +29,10 @@ object Main {
         val entry = Entry(id, actor, loc)
         actorsArray += entry
       }
-      Thread.sleep(2000)
+      Thread.sleep(1000)
       bufferSpace
     }
+    actorsArray.toArray
   }
 
   private def getIps = {
@@ -129,14 +130,48 @@ object Main {
 //    val e6 = Entry("3413", a6, Location(1, 1))
 
     import Node._
-    buildNetwork(system, statActor)
-    Thread.sleep(5000)
+    val actors = buildNetwork(system, statActor)
+    Thread.sleep(2000)
     statActor ! AvgJoinHopsRequest
+    Thread.sleep(2000)
+
+    val first = actors.head
+    println(first._id)
+    val last = actors.last
+    println(last._id)
+
+
+    Thread.sleep(2000)
+    object TestActor {
+      def props: Props = Props(new TestActor)
+    }
+
+    class TestActor extends Actor {
+      override def preStart(): Unit = {
+        last._actor ! RouteRequest(first._id)
+      }
+
+      override def receive: Receive = {
+        case RouteRequestOK(trace) =>
+          printArray(trace)
+        case _ =>
+          println("unexpected")
+      }
+    }
+
+    system.actorOf(TestActor.props)
   }
 
   def bufferSpace: Unit = {
     for(_ <- 1 to 5) {
       println()
     }
+  }
+
+  private def printArray(entries: Array[Entry]): Unit = {
+    println(s"[${makeStr(entries)}]")
+  }
+  private def makeStr(entries: Array[Entry]): String = {
+    entries.map(_._id).mkString(",")
   }
 }

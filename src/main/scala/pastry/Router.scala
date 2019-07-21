@@ -37,6 +37,39 @@ class Router(state: (LeafSet[Entry], RoutingTable[Entry], NeighbourhoodSet[Entry
           "forward-join-request-maker")
       }
 
+
+    case HandleRouteRequest(host, key, respondTo) =>
+      val trace = makeArray(host)
+      val node = routingAlgorithm(key, state, host)
+      println(s"[${host._id}] Routing algorithm found node ${if(node.isDefined) node.get._id else node}")
+      if(node.isEmpty){
+        // error
+      } else {
+        if(trace.contains(node.get)) {
+          respondTo ! RouteRequestOK(trace)
+        } else {
+          context.actorOf(ForwardRouteRequestMaker.props(node.get, key, trace, state, host, respondTo),
+            "forward-route-request-maker")
+        }
+      }
+
+    case HandleForwardRouteRequest(host, key, trace, respondTo) =>
+      val newTrace = trace :+ host
+      val node = routingAlgorithm(key, state, host)
+      println(s"[${host._id}] Routing algorithm found node ${if(node.isDefined) node.get._id else node}")
+      if(node.isEmpty){
+        // error
+      } else {
+        if(newTrace.contains(node.get)) {
+          respondTo ! RouteRequestOK(newTrace)
+        } else {
+          context.actorOf(ForwardRouteRequestMaker.props(node.get, key, newTrace, state, host, respondTo),
+            "forward-route-request-maker")
+        }
+      }
+
+
+
     case UpdateState(newState) =>
       context.become(messageHandler(newState))
   }

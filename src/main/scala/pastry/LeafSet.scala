@@ -29,8 +29,8 @@ class LeafSet[Type](val host: Type,
                     val diffFn: (Type, Type) => Int)
                    (implicit lower: Option[BoundedPriorityQueue[Type]] = None,
                     higher: Option[BoundedPriorityQueue[Type]] = None) {
-  val _lower: BoundedPriorityQueue[Type] = lower.getOrElse(new BoundedPriorityQueue[Type](entries/2, distCompFn))
-  val _higher: BoundedPriorityQueue[Type] = higher.getOrElse(new BoundedPriorityQueue[Type](entries/2, distCompFn))
+  val _lower: BoundedPriorityQueue[Type] = lower.getOrElse(new BoundedPriorityQueue[Type](entries/2, numericCompFn))
+  val _higher: BoundedPriorityQueue[Type] = higher.getOrElse(new BoundedPriorityQueue[Type](entries/2, numericCompFn))
 
   /**
     * Get the lowest element in the leafSet

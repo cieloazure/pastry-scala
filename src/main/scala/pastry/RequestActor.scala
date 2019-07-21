@@ -71,7 +71,6 @@ class RequestActor(contextIdx: Int,
     case msg: Any =>
       println(msg)
   }
-  override def receive: Receive = Actor.emptyBehavior
   private def makeStr(entries: Array[Entry]): String = {
     entries.map(_._id).mkString(",")
   }
@@ -79,4 +78,5 @@ class RequestActor(contextIdx: Int,
     println(s"[$prefix] State: ([${makeStr(state._1.getAllElem)}] + [${makeStr(state._2.getAllElem)}] " +
       s"+ [${makeStr(state._3.getAllElem)}])")
   }
+  override def receive: Receive = Actor.emptyBehavior
 }

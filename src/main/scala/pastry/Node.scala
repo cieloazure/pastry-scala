@@ -34,6 +34,12 @@ object Node {
   case object StateFixed
   case class JoinStats(hops: Int)
   case object AvgJoinHopsRequest
+  case class RouteRequest(key: String)
+  case class HandleRouteRequest(host: Entry, key: String, respondTo: ActorRef)
+  case class ForwardRouteRequest(key: String, trace: Array[Entry], respondTo: ActorRef)
+  case object ForwardRouteRequestAck
+  case class HandleForwardRouteRequest(host: Entry, key: String, trace: Array[Entry], respondTo: ActorRef)
+  case class RouteRequestOK(trace: Array[Entry])
 }
 
 class Node (val myIpAddress: String,
@@ -63,7 +69,8 @@ class Node (val myIpAddress: String,
     if(seedEntry.isDefined) {
       println(s"[${_id}] Sending join request to seed node ${seedEntry.get._id}")
       context.become(waitForJoinResponse(_state))
-      context.actorOf(RequestActor.props(1, seedEntry.get._actor, JoinRequest(_hostNode), _state), "request-actor-join-context")
+      context.actorOf(RequestActor.props(1, seedEntry.get._actor, JoinRequest(_hostNode), _state),
+        "request-actor-join-context")
     } else {
       val router = context.actorOf(Router.props(_state), "router")
       context.become(active(_state, router))
@@ -159,6 +166,14 @@ class Node (val myIpAddress: String,
       println(s"[${_id}] New node joined the network. State now: ${getStateString(newState)}")
       context.become(active(newState, router))
       router ! UpdateState(newState)
+
+    case RouteRequest(key) =>
+      println(s"[${_id}] Route request receive for key ${key}")
+      router ! HandleRouteRequest(_hostNode, key, sender())
+
+    case ForwardRouteRequest(key, trace, respondTo) =>
+      sender() ! ForwardRouteRequestAck
+      router ! HandleForwardRouteRequest(_hostNode, key, trace, respondTo)
 
     case Ping =>
       sender() ! Pong
