@@ -29,7 +29,7 @@ object Main {
         val entry = Entry(id, actor, loc)
         actorsArray += entry
       }
-      Thread.sleep(1000)
+      Thread.sleep(500)
       bufferSpace
     }
     actorsArray.toArray
@@ -132,34 +132,76 @@ object Main {
     import Node._
     val actors = buildNetwork(system, statActor)
     Thread.sleep(2000)
+
     statActor ! AvgJoinHopsRequest
-    Thread.sleep(2000)
-
-    val first = actors.head
-    println(first._id)
-    val last = actors.last
-    println(last._id)
-
 
     Thread.sleep(2000)
-    object TestActor {
-      def props: Props = Props(new TestActor)
+
+    object CollectorActor{
+      def props: Props = Props(new CollectorActor)
+      case class RouteStat(forNode: String, result: Boolean)
+      case object PrintStats
     }
 
-    class TestActor extends Actor {
+    class CollectorActor extends Actor {
+      import CollectorActor._
+      override def receive: Receive = active(Map.empty)
+
+      def active(results: Map[String, (Int, Int)]): Receive = {
+        case RouteStat(forNode, result) =>
+          val (oldValue, numValues) = results.getOrElse(forNode, (0, 0))
+          val newNumValues = numValues + 1
+          if(result){
+            val newValue = oldValue + 1
+            val newResults = results + (forNode -> (newValue, newNumValues))
+            context.become(active(newResults))
+          } else {
+            val newResults = results + (forNode -> (oldValue, newNumValues))
+            context.become(active(newResults))
+          }
+
+        case PrintStats =>
+          println(results.mkString(","))
+      }
+    }
+
+
+    object TestActor {
+      def props(to: Entry, forNode: Entry, collector: ActorRef): Props = Props(new TestActor(to, forNode, collector))
+    }
+
+    class TestActor(to: Entry, forNode: Entry, collector: ActorRef) extends Actor {
+      import CollectorActor._
+
       override def preStart(): Unit = {
-        last._actor ! RouteRequest(first._id)
+        to._actor ! RouteRequest(forNode._id)
       }
 
       override def receive: Receive = {
         case RouteRequestOK(trace) =>
-          printArray(trace)
+          println(s"Success for ${forNode._id} with ${to._id}?: ${trace.last._id == forNode._id}")
+          collector ! RouteStat(forNode._id, trace.last._id == forNode._id)
+
+          context.stop(self)
         case _ =>
           println("unexpected")
       }
     }
 
-    system.actorOf(TestActor.props)
+    val collector = system.actorOf(CollectorActor.props)
+    for(current <- actors) {
+      for(other <- actors) {
+        if(other != current) {
+          system.actorOf(TestActor.props(other, current, collector))
+          Thread.sleep(300)
+        }
+      }
+      Thread.sleep(300)
+      import CollectorActor._
+      collector ! PrintStats
+    }
+
+//    system.actorOf(TestActor.props(first, last))
   }
 
   def bufferSpace: Unit = {
